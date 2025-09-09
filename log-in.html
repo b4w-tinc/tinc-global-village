@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TINC - Log In</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="signup-body">
+    
+        <div class="signup-container">
+    
+        <div class="header">
+    
+            <div class="signup-logo">
+                <img src="./tinc logo.jpg" alt="logo">
+                <h3 class="span-1">B4W.TINC</h3>
+            </div>
+        </div>
+
+        <main>
+                
+            <div class="signup-form">
+                <h2>Log In to Continue</h2>
+                <p>Welcome Back! Enter your credentials to continue.</p>
+
+                <form action="./home.html" id="signupForm" method="post">
+
+                    <label for="Email"> Email </label>
+                    <h6><input type="email" id="Email" name="Email" placeholder="john.doe@example.com" class="input" required></h6>
+
+                    <label for="password" class="password"> Password </label>
+                    <h6><input type="password" id="password" name="password" placeholder="Enter your password" class="input" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" title="Password must be atleast 8 characters and include: 1 uppercase, 1 lowercase, 1 number and 1 special character" required></h6>
+                    <br><br>
+
+                    <h4><a href="./forgot-password.html">Forgot Password</a></h4>
+
+                    <button type="submit" class="form-btn">Submit</button>
+
+                </form>
+            </div>
+        </main>
+
+        <div class="signup-aux-txt">
+            Don't have an account? <a href="./sign-up.html">Sign Up</a>
+        </div>
+        
+        <div class="signup-footer">
+            <p>Beyond 4 Walls © 2025</p>
+            <h4>Made by <a href="https://devantics.online" target="_blank">Devantics</a></h4>
+        </div>
+
+    </div>
+
+    </div>
+</body>
+</html>

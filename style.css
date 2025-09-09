@@ -391,6 +391,15 @@ a{
     color: #fff;
 }
 
+/*LOGIN PAGE*/
+
+form a{
+    color: blue;
+    font-weight: bold;
+    font-size: 15px;
+}
+
+
 @media (max-width: 600px) {
 
     /*WELCOME PAGE*/
