@@ -1,0 +1,143 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+a{
+    text-decoration: none;
+    color: #171A1FFF;
+}
+
+.landing-header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.landing-header-text h1 {
+    width: 300px;
+    font-size: 52px;
+   margin-right: 300px;
+}
+
+.landing-header-text p {
+    padding-top: 15px;
+    width: 500px;
+    font-size: 18px;
+    line-height: 29px;
+}
+
+.landing-header img {
+    width: 400px;
+    height: 350px;
+}
+
+.landing-btn{
+    padding-top: 30px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.landing-signup{
+    border: #0B62EEFF 10px solid;
+    background-color: #0B62EEFF;
+    color: #fff;
+    opacity: 1;
+}
+
+.landing-signup:hover {
+    color: #171A1FFF;
+    border: #DEE1E6FF 10px solid;
+    background: #DEE1E6FF;
+}
+
+.landing-login{
+    border: #DEE1E6FF 10px solid;
+    background-color: #DEE1E6FF;
+    color: #171A1FFF;
+    opacity: 1;
+}
+
+.landing-login:hover {
+    color: #FFFFFFFF;
+    background: #0B62EEFF;
+    border: #0B62EEFF 10px solid;
+}
+
+/* Container */
+.container {
+    position: absolute;
+    top: 560px;
+    left: 0px;
+    width: 1440px;
+    height: 906px;
+    background: #FAFAFBFF;
+    border-radius: 0px 0px 0px 0px;
+}
+
+.landing-container{
+    border: auto solid #DEE1E6FF;
+    background: #DEE1E6FF;
+    color: #fff;
+    height: 100%;
+    gap: 20px;
+    margin: 50px;
+    color: #000;
+}
+
+.landing-container h3{
+    text-align: center;
+    font-size: 40px;
+    padding-top: 50px;
+}
+
+.landing-boxes{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto;
+    padding: 50px;
+}
+
+.box{
+    border: #fff 10px solid;
+    background: #fff;
+    margin: 20px;
+    width: 250px;
+    padding: 20px;
+}
+
+.box h4{
+    padding-bottom: 20px;
+    font-size: 30px;
+}
+
+.landing-footer{
+    background: #171A1FFF;
+    color: #fff;
+    text-align: center;
+    height: 100%;
+    padding: 20px;
+}
+
+.landing-footer p{
+    font-size: 25px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+}
+
+.landing-footer h4{
+    font-size: 15px;
+    padding-bottom: 10px;
+}
+
+.landing-footer a {
+    color: #fff;
+}
+
+.landing-footer a:hover{
+    color: blue;
+}
