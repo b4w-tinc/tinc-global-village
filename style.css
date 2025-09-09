@@ -9,6 +9,83 @@ a{
     color: #171A1FFF;
 }
 
+/*WELCOME PAGE*/
+.welcome-logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    margin-top: 50px;
+    margin-bottom: 100px;
+}
+
+.welcome-logo img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50px;
+}
+
+.welcome-text {
+    text-align: center;
+    margin-bottom: 100px;
+}
+
+.welcome-text h2{
+    font-size: 52px;
+    font-weight: bold;
+    padding-bottom: 20px;
+    width: 300px;
+    margin-left: 600px;
+}
+
+.welcome-text p{
+    font-size: 20px;
+    padding-bottom: 50px;
+    width: 500px;
+    margin-left: 500px;
+}
+
+.welcome-text a{
+    border: #0B62EEFF 10px solid;
+    background-color: #0B62EEFF;
+    color: #fff;
+    padding: 10px 30px;
+    border-radius: 50px;
+}
+
+.welcome-text a:hover{
+    color: #171A1FFF;
+    border: #DEE1E6FF 10px solid;
+    background: #DEE1E6FF;
+}
+
+.welcome-footer{
+    display: flex;
+    background: #fff;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.footer-text p {
+    font-size: 20px;
+    padding-bottom: 10px;
+}
+
+.footer-text a:hover {
+    color: blue;
+}
+
+.footer-logo{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+/*LANDING PAGE*/
+
 .landing-header{
     display: flex;
     flex-direction: row;
@@ -131,8 +208,40 @@ a{
     color: blue;
 }
 
-/*MEDIA QUERY*/
+
 @media (max-width: 600px) {
+
+    /*WELCOME PAGE*/
+
+    .welcome-text h2{
+        margin-left: 50px;
+        font-size: 30px;
+    }
+
+    .welcome-text p {
+        font-size: 15px;
+        padding-bottom: 50px;
+        width: 500px;
+        margin-left: 75px;
+        width: 300px;
+    }
+
+    .welcome-footer{
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .footer-text{
+        margin-bottom: 20px;
+    }
+
+    .footer-text h4{
+        text-align: center;
+    }
+
+    /*LANDING PAGE*/
+
     .landing-header{
       display: flex;
       flex-direction: column;
@@ -179,6 +288,24 @@ a{
 }
 
 @media (min-width: 601px) and (max-width: 1024px) {
+        
+    /*WELCOME PAGE*/
+    
+        .welcome-text h2 {
+            margin-left: 250px;
+            font-size: 30px;
+        }
+    
+        .welcome-text p {
+            font-size: 15px;
+            padding-bottom: 50px;
+            width: 500px;
+            margin-left: 250px;
+            width: 300px;
+        }
+    
+    /*LANDING PAGE*/
+    
     .landing-header {
             display: flex;
             flex-direction: column;
