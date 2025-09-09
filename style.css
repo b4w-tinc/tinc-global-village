@@ -68,17 +68,6 @@ a{
     border: #0B62EEFF 10px solid;
 }
 
-/* Container */
-.container {
-    position: absolute;
-    top: 560px;
-    left: 0px;
-    width: 1440px;
-    height: 906px;
-    background: #FAFAFBFF;
-    border-radius: 0px 0px 0px 0px;
-}
-
 .landing-container{
     border: auto solid #DEE1E6FF;
     background: #DEE1E6FF;
@@ -141,3 +130,89 @@ a{
 .landing-footer a:hover{
     color: blue;
 }
+
+/*MEDIA QUERY*/
+@media (max-width: 600px) {
+    .landing-header{
+      display: flex;
+      flex-direction: column;
+      align-items: center; 
+      margin: 50px;
+    }
+
+    .landing-header-text{
+        margin-bottom: 20px;
+        width: 100%;
+        text-align: center;
+    }
+
+        .landing-header-text h1 {
+            width: 100%;
+            font-size: 30px;
+            margin-right: 0;
+        }
+    
+        .landing-header-text p {
+            padding-top: 15px;
+            width: 100%;
+            font-size: 18px;
+            line-height: 29px;
+        }
+
+        .landing-btn{
+            margin-left: 50px;
+        }
+
+        .landing-boxes {
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+        }
+
+        .box {
+            border: #fff 10px solid;
+            background: #fff;
+            margin-bottom: 10px;
+            width: 250px;
+            padding: 20px;
+         }
+}
+
+@media (min-width: 601px) and (max-width: 1024px) {
+    .landing-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 50px;
+        }
+        
+                .landing-header-text {
+                    margin-bottom: 20px;
+                    width: 100%;
+                    text-align: center;
+                }
+        
+                .landing-header-text h1 {
+                    width: 100%;
+                    font-size: 30px;
+                    margin-right: 0;
+                }
+        
+                .landing-header-text p {
+                    padding-top: 15px;
+                    width: 100%;
+                    font-size: 18px;
+                    line-height: 29px;
+                }
+        
+                .landing-btn {
+                    margin-left: 250px;
+                }
+
+                .landing-boxes {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    grid-template-rows: auto;
+                    padding: 20px;
+                }
+    }
