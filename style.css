@@ -103,6 +103,10 @@ footer a{
     
 }
 
+.footer-links a:hover{
+    color: #F26C2B
+}
+
 footer ul{
     display: flex;
     flex-direction: row;
@@ -130,6 +134,10 @@ footer img{
 
 .footer-text a{
     color: #00AEEF;
+}
+
+.footer-text a:hover{
+    color: #F36C21;
 }
 
 .footer-text p{
