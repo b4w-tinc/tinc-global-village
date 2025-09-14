@@ -132,6 +132,10 @@ footer img{
     color: #00AEEF;
 }
 
+.footer-text p{
+    margin-bottom: 10px;
+}
+
 .down{
     height: 30px;
     background: #f2f2f2;
@@ -141,10 +145,6 @@ footer img{
     .footer-links{
         flex-direction: column;
         gap: 20px;
-    }
-
-    .footer-text p{
-        padding-bottom: 10px;
     }
 
     .down{
