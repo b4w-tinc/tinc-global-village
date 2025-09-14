@@ -1,1 +1,0 @@
-# tinc-global-village
