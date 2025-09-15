@@ -77,6 +77,8 @@ header img{
     border: 5px solid linear-gradient(135deg, #000000, #2EB5E5);
     background: linear-gradient(135deg, #000000, #2EB5E5);
     padding: 10px 20px;
+    width: 50%;
+    text-align: center;
 }
 
 .log-in {
@@ -84,6 +86,8 @@ header img{
     background: #fff;
     padding: 5px 30px;
     color: #000000;
+    width: 50%;
+    text-align: center;
 }
 
 .sign-up:hover {
@@ -204,9 +208,19 @@ footer a:hover{
     }
 
     .header-btn {
-        display: flex;
-        align-items: center;
         gap: 15px;
+        flex-direction: column;
+    }
+
+    .sign-up{
+        width: 100%;
+        text-align: center;
+        
+    }
+
+    .log-in{
+        width: 100%;
+       text-align: center;
     }
 
     header img {
@@ -247,6 +261,21 @@ footer a:hover{
             font-size: 40px;
             margin-bottom: 30px;
         }
+
+                .header-btn {
+                    flex-direction: column;
+                }
+        
+                .sign-up {
+                    width: 100%;
+                    text-align: center;
+        
+                }
+        
+                .log-in {
+                    width: 100%;
+                    text-align: center;
+                }
     
         header img {
             display: none;
