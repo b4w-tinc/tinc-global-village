@@ -1,10 +1,10 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body{
+body {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -12,16 +12,16 @@ body{
     background: linear-gradient(135deg, #2EB5E5, #F26C2B);
 }
 
-.top{
+.top {
     height: 100%;
-    border: 2px light linear-gradient(135deg, #2EB5E5, #FFFFFF); 
+    border: 2px light linear-gradient(135deg, #2EB5E5, #FFFFFF);
     background: linear-gradient(135deg, #2EB5E5, #FFFFFF);
     width: 40%;
     margin-top: 50px;
-    margin-bottom: 50px;   
+    margin-bottom: 50px;
 }
 
-.logo{
+.logo {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -29,58 +29,63 @@ body{
     margin-top: 40px;
 }
 
-.logo img{
+.logo img {
     width: 50px;
     height: 50px;
     border-radius: 50%;
 }
 
-.logo h3{
-    background: linear-gradient(135deg, #F36C21, #00AEEF); 
+.logo h3 {
+    background: linear-gradient(135deg, #F36C21, #00AEEF);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     font-size: 18px;
 }
 
-header{
+header {
     text-align: center;
     margin: 30px 0;
 }
 
-header h2{
+header h2 {
     padding-bottom: 10px;
 }
 
-form{
+form {
     margin: 40px;
 }
 
-form h3{
+form h3 {
     margin-bottom: 10px;
 }
 
-.form-span{
+.form-span {
     width: 90%;
 }
 
-.agreement{
+.agreement {
     font-size: 20px;
 }
 
-form a{
-    text-decoration: none;
+.forgot-pw{
+    text-align: right;
 }
 
-form a:hover{
+form a {
+    text-decoration: none;
+    color: #00AEEF;
+}
+
+form a:hover {
     color: #F36C21;
 }
 
-.form-btn{
+.form-btn {
     display: flex;
     justify-content: center;
 }
 
-.submit{
+.submit {
     border: 5px solid #2EB5E5;
     background: #2EB5E5;
     padding: 5px 10px;
@@ -88,26 +93,26 @@ form a:hover{
     cursor: pointer;
 }
 
-.submit:hover{
+.submit:hover {
     border: 5px solid #F2F2F2;
     background: #f2f2f2;
 }
 
-.log-in-redirect p{
+.sign-up-redirect p {
     text-align: center;
     padding-bottom: 20px;
 }
 
-.log-in-redirect a{
+.sign-up-redirect a {
     color: #2EB5E5;
     text-decoration: none;
 }
 
-.log-in-redirect a:hover{
+.sign-up-redirect a:hover {
     color: #F26C2B;
 }
 
-footer ul{
+footer ul {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -115,12 +120,12 @@ footer ul{
     gap: 15px;
 }
 
-footer li{
+footer li {
     list-style-type: none;
     padding-left: 10px;
 }
 
-footer a{
+footer a {
     color: #fff;
     text-decoration: none;
 }
@@ -129,41 +134,43 @@ footer a:hover {
     color: #000;
 }
 
-footer img{
+footer img {
     width: 50px;
     height: 50px;
 }
 
-.ul-1{
+.ul-1 {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    padding-bottom: 40px;
 }
 
 .ul-2 {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    padding-bottom: 40px;
 }
 
 @media (max-width: 600px) {
 
-    .top {
+    .top{
         width: 100%;
     }
 
     .agreement {
         font-size: 11px;
     }
-
+    
 }
 
 @media (min-width:601px) and (max-width:900px) {
     .top {
-        width: 60%;
-    }
+            width: 60%;
+        }
 
-    .agreement {
-        font-size: 15px;
-    }
+                .agreement {
+                    font-size: 15px;
+                }
 }

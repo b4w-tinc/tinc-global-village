@@ -4,8 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <link rel="stylesheet" href="./sign-up-style.css">
 </head>
 <body>
+    <div class="top">
+            <div class="logo">
+                <img src="./tinc logo.jpg" alt="TINC Logo">
+                <h3>B4W.TINC</h3>
+            </div>
+            <header>
+                <h2>Join TINC Global Village</h2>
+                <p>Create your professional profile to connect with peers and opportunities.</p>
+            </header>
+
+            <form id="signUp">
+                <label for="Full Name"><h3>Full Name</h3></label>
+                <input type="text" class="form-span" name="Full Name" id="Full Name" placeholder="John Doe" required>
+                <br><br>
+                <label for="signupEmail"><h3>Email</h3></label>
+                <input type="email" class="form-span" name="Full Name" id="signupEmail" placeholder="johndoe@example.com" required>
+                <br><br>
+                <input type="checkbox" name="DOB" id="DOB" required style="cursor: pointer;">
+                <label for="DOB">By checking this box, I confirm that I am 16 years of age and older</label>
+                <br><br>
+                <label for="signupPassword">
+                    <h3>Password</h3>
+                </label>
+                <input type="password" class="form-span" name="Password" id="signupPassword" placeholder="Enter your Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#_.*])[A-Za-z\d@$!%*?&#_.*]{8,}$" title="Password must be atleast 8 characters and include: 1 uppercase, 1 lowercase, 1 number and 1 special character" required>
+                <br><br>
+                <input type="checkbox" name="check-password" id="checkPassword" style="cursor: pointer;">
+                <label for="checkPassword" id="toggleLabel">Show Password</label>
+                <br><br>
+                <label for="confirmPassword">
+                    <h3>Confirm Password</h3>
+                </label>
+                <input type="password" class="form-span" name="Confirm Password" id="confirmPassword" placeholder="Confirm your password" required>
+                <br><br>
+                <input type="checkbox" name="agreement" id="agreement" required style="cursor: pointer;">
+                <label for="agreement" id="agreement" class="agreement">I agree to the <a href="./terms-of-service.txt" target="_blank" rel="noopener norefferrer">Terms of Service</a> and <a href="./privacy-policy.txt" target="_blank" rel="noopener norefferrer">Privacy Policy</a></label>
+                <br><br><br>
+                <div class="form-btn">
+                    <button type="submit" class="submit"> Create Account </button>
+                </div>
+                
+            </form>
+
+            <div class="log-in-redirect">
+                <p>Already have an account? <a href="./log-in.html">Log In</a></p>
+            </div>
+    </div>
+
+    <footer>
+        <ul>
+            <div class="ul-1">
+                <li><a href="./">Legal</a></li>
+                <li><a href="./">Support</a></li>
+            </div>
+            <div class="ul-2">
+                <li><a href="https://www.instagram.com/b4w.tinc?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank"
+                    rel="norefferrer noopener"><img src="./instagram-logo-facebook-2-svgrepo-com (1).svg" alt=""></a></li>
+                    <li><a href="./"><img src="./linkedin-logo-svgrepo-com.svg" alt=""></a></li>
+                <li><a href="./"><img src="./twitter-logo-thin-svgrepo-com.svg" alt=""></a></li>
+            </div>
+        </ul>
+    </footer>
+
+    <script src="./sign-up-script.js"></script>
     
 </body>
 </html>
