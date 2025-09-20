@@ -3,9 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter OTP</title>
+    <title>Verify Email</title>
+    <link rel="stylesheet" href="./sign-up-auth.css">
 </head>
 <body>
-    
+    <div class="top">
+        <div class="logo">
+            <img src="./tinc logo.jpg" alt="TINC Logo">
+            <h3>B4W.TINC</h3>
+        </div>
+        <header>
+            <h2>Enter OTP</h2>
+            <p>An OTP was sent to the mail you used to sign-up.</p> <p> Pls enter the OTP to verify your email</p>
+        </header>
+        <form id="signupAuth">
+
+                <label for="otpCode">
+                    <h3>OTP</h3>
+                </label>
+                <div class="otp-bar">
+                <input type="text" name="OTP" id="otpCode" placeholder="123-456" maxlength="7" required>
+                <button type="submit" class="submit">Verify OTP</button>
+                </div>
+                <br><br>
+                    <input type="checkbox" id="rememberDevice" style="cursor: pointer;">
+                    <label for="rememberDevice">Remember Device</label>
+                </form>
+
+                <button id="sendOtpBtn" class="re-send">Re-send OTP</button>
+                <p id="timerDisplay"></p>
+            </div>
+
+            
+        
+
+        </div>
+        <footer>
+            <ul>
+                <div class="ul-1">
+                    <li><a href="./">Legal</a></li>
+                    <li><a href="./">Support</a></li>
+                </div>
+                <div class="ul-2">
+                    <li><a href="https://www.instagram.com/b4w.tinc?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                            target="_blank" rel="norefferrer noopener"><img
+                                src="./instagram-logo-facebook-2-svgrepo-com (1).svg" alt=""></a></li>
+                    <li><a href="./"><img src="./linkedin-logo-svgrepo-com.svg" alt=""></a></li>
+                    <li><a href="./"><img src="./twitter-logo-thin-svgrepo-com.svg" alt=""></a></li>
+                </div>
+            </ul>
+        </footer>
+
+        <script src="https://cdn.jsedelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+        <script src="./sign-up-auth.js"></script>
 </body>
 </html>
