@@ -22,22 +22,21 @@
                     <h3>OTP</h3>
                 </label>
                 <div class="otp-bar">
-                <input type="text" name="OTP" id="otpCode" placeholder="123-456" maxlength="7" required>
-                <button type="submit" class="submit">Verify OTP</button>
+                <input type="text" name="OTP" id="otpCode" placeholder="123456" maxlength="6" required>
+                <button type="submit" class="submit" id="verifyOtpBtn">Verify OTP</button>
                 </div>
+                <br><br>
+                <p id="messageBox"></p>
                 <br><br>
                     <input type="checkbox" id="rememberDevice" style="cursor: pointer;">
                     <label for="rememberDevice">Remember Device</label>
                 </form>
-
-                <button id="sendOtpBtn" class="re-send">Re-send OTP</button>
-                <p id="timerDisplay"></p>
+                <p style="margin-left: 20px;">Didn't receive mail? Click button below to request for OTP</p>
+                <button id="sendOtpBtn" class="re-send" id="sendOtpBtn" disabled>Re-send OTP</button>
+                <p id="timerDisplay" style="font-size: 0.9em; color:gray; display: none;">
+                    You can request a new OTP in <span id="countdown">60</span> seconds
+                </p>
             </div>
-
-            
-        
-
-        </div>
         <footer>
             <ul>
                 <div class="ul-1">
@@ -53,8 +52,7 @@
                 </div>
             </ul>
         </footer>
-
-        <script src="https://cdn.jsedelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
         <script src="./sign-up-auth.js"></script>
 </body>
 </html>

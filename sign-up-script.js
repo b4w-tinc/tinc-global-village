@@ -1,3 +1,4 @@
+// ---------------- FORM ELEMENTS ----------------
 const form = document.getElementById("signUp");
 const signupPassword = document.getElementById("signupPassword");
 const confirmPassword = document.getElementById("confirmPassword");
@@ -7,7 +8,7 @@ const toggleLabel = document.getElementById("toggleLabel");
 // SheetDB URL
 const SHEETDB_URL = "https://sheetdb.io/api/v1/tsa10q47pdryu"; 
 
-// Utility: Hash Password
+// ---------------- UTILITY: HASH PASSWORD ----------------
 async function hashPassword(password) {
     const msgUint8 = new TextEncoder().encode(password);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
@@ -16,7 +17,7 @@ async function hashPassword(password) {
     return hashHex;
 }
 
-// Utility: Check if email exists in SheetDB
+// ---------------- UTILITY: CHECK EMAIL EXISTS ----------------
 async function emailExistsInSheet(email) {
     try {
         const res = await fetch(`${SHEETDB_URL}/search?Email=${encodeURIComponent(email)}`, {
@@ -30,7 +31,7 @@ async function emailExistsInSheet(email) {
     }
 }
 
-// Handle Form Submission
+// ---------------- HANDLE FORM SUBMISSION ----------------
 form.addEventListener("submit", async function(event) {
     event.preventDefault();
 
@@ -48,7 +49,7 @@ form.addEventListener("submit", async function(event) {
     // Hash password
     const hashedPass = await hashPassword(pass);
 
-    //Device ID generation
+    // Device ID generation
     let deviceId = localStorage.getItem("deviceId");
     if (!deviceId) {
         deviceId = crypto.randomUUID();
@@ -70,6 +71,10 @@ form.addEventListener("submit", async function(event) {
     localStorage.setItem("deviceId", deviceId)
     localStorage.setItem("activeUser", JSON.stringify(newUser));
 
+    // Store for OTP page
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userName", fullName);
+
     // Save user to SheetDB
     try {
         await fetch(SHEETDB_URL, {
@@ -81,8 +86,8 @@ form.addEventListener("submit", async function(event) {
                     "Email": email,
                     "PasswordHash": hashedPass,
                     "Signup Date": new Date().toISOString(),
-                    "Verified": "false", //not verfied until OTP/email verification
-                    "Device Info": JSON.stringify([deviceId]),
+                    "Verified": "false", // not verified until OTP
+                    "Device Info": deviceId,
                     "OTP Attempts": 0
                 }
             })
@@ -95,7 +100,7 @@ form.addEventListener("submit", async function(event) {
     window.location.href = "./sign-up-auth.html";
 });
 
-// Show/Hide Password Feature
+// ---------------- SHOW/HIDE PASSWORD FEATURE ----------------
 showPassword.addEventListener("change", function() {
     const type = this.checked ? "text" : "password";
     signupPassword.type = type;
