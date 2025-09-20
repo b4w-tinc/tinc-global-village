@@ -48,6 +48,13 @@ form.addEventListener("submit", async function(event) {
     // Hash password
     const hashedPass = await hashPassword(pass);
 
+    //Device ID generation
+    let deviceId = localStorage.getItem("deviceId");
+    if (!deviceId) {
+        deviceId = crypto.randomUUID();
+        localStorage.setItem("deviceId", deviceId);
+    }
+
     // Check if email exists in SheetDB
     const existsInSheet = await emailExistsInSheet(email);
     if (existsInSheet) {
@@ -60,6 +67,7 @@ form.addEventListener("submit", async function(event) {
     const newUser = { fullName, email, password: hashedPass };
     users.push(newUser);
     localStorage.setItem("tincUsers", JSON.stringify(users));
+    localStorage.setItem("deviceId", deviceId)
     localStorage.setItem("activeUser", JSON.stringify(newUser));
 
     // Save user to SheetDB
@@ -73,8 +81,8 @@ form.addEventListener("submit", async function(event) {
                     "Email": email,
                     "PasswordHash": hashedPass,
                     "Signup Date": new Date().toISOString(),
-                    "Verified": "false",
-                    "Device Info": navigator.userAgent,
+                    "Verified": "false", //not verfied until OTP/email verification
+                    "Device Info": JSON.stringify([deviceId]),
                     "OTP Attempts": 0
                 }
             })
