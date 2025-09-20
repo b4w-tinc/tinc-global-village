@@ -4,14 +4,10 @@ const confirmPassword = document.getElementById("confirmPassword");
 const showPassword = document.getElementById("checkPassword");
 const toggleLabel = document.getElementById("toggleLabel");
 
-// =====================
-// Config: your deployed Web App URL
-// =====================
-const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby47wBzI44LdG40zTI2WmASVkcHhoedYIabvlVNCYS3oL4lBUOPE9rzm6fZUM8n-fA0aw/exec";
+// SheetDB URL
+const SHEETDB_URL = "https://sheetdb.io/api/v1/tsa10q47pdryu"; 
 
-// =====================
 // Utility: Hash Password
-// =====================
 async function hashPassword(password) {
     const msgUint8 = new TextEncoder().encode(password);
     const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
@@ -20,25 +16,21 @@ async function hashPassword(password) {
     return hashHex;
 }
 
-// =====================
-// Check if email exists in Google Sheet (authoritative)
-// =====================
+// Utility: Check if email exists in SheetDB
 async function emailExistsInSheet(email) {
     try {
-        const response = await fetch(`${WEB_APP_URL}?action=checkEmail&email=${encodeURIComponent(email)}`, {
-            method: "GET"
+        const res = await fetch(`${SHEETDB_URL}/search?Email=${encodeURIComponent(email)}`, {
+            method: "GET",
         });
-        const data = await response.json();
-        return data.exists; // true/false
+        const data = await res.json();
+        return data.length > 0;
     } catch (err) {
-        console.error("Error checking email in Google Sheet:", err);
-        return false; // fail safe
+        console.error("Error checking email in SheetDB:", err);
+        return false;
     }
 }
 
-// =====================
 // Handle Form Submission
-// =====================
 form.addEventListener("submit", async function(event) {
     event.preventDefault();
 
@@ -56,7 +48,7 @@ form.addEventListener("submit", async function(event) {
     // Hash password
     const hashedPass = await hashPassword(pass);
 
-    // Check if email exists in Google Sheet
+    // Check if email exists in SheetDB
     const existsInSheet = await emailExistsInSheet(email);
     if (existsInSheet) {
         alert("An account with this email already exists. Please log in instead.");
@@ -70,41 +62,32 @@ form.addEventListener("submit", async function(event) {
     localStorage.setItem("tincUsers", JSON.stringify(users));
     localStorage.setItem("activeUser", JSON.stringify(newUser));
 
-    // Save user to Google Sheet
+    // Save user to SheetDB
     try {
-        const postResponse = await fetch(WEB_APP_URL, {
+        await fetch(SHEETDB_URL, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                fullName: fullName,
-                email: email,
-                passwordHash: hashedPass,
-                verified: false,
-                device: navigator.userAgent,
-                otpAttempts: 0
+                data: {
+                    "Full Name": fullName,
+                    "Email": email,
+                    "PasswordHash": hashedPass,
+                    "Signup Date": new Date().toISOString(),
+                    "Verified": false,
+                    "Device Info": navigator.userAgent,
+                    "OTP Attempts": 0
+                }
             })
         });
-
-        const postResult = await postResponse.json();
-        if (postResult.result === "success") {
-            console.log("User successfully added to Google Sheet at row:", postResult.row);
-        } else {
-            console.error("Failed to add user to Google Sheet:", postResult.message);
-        }
-
     } catch (err) {
-        console.error("Error adding user to Google Sheet:", err);
+        console.error("Error adding user to SheetDB:", err);
     }
 
     // Redirect to OTP/verification page
     window.location.href = "./sign-up-auth.html";
 });
 
-// =====================
 // Show/Hide Password Feature
-// =====================
 showPassword.addEventListener("change", function() {
     const type = this.checked ? "text" : "password";
     signupPassword.type = type;
