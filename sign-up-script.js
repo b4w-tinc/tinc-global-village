@@ -73,7 +73,7 @@ form.addEventListener("submit", async function(event) {
                     "Email": email,
                     "PasswordHash": hashedPass,
                     "Signup Date": new Date().toISOString(),
-                    "Verified": false,
+                    "Verified": "false",
                     "Device Info": navigator.userAgent,
                     "OTP Attempts": 0
                 }
