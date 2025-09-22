@@ -1,3 +1,7 @@
+(function () {
+    emailjs.init("n2ck3LYOGt_XTSnvy")
+})();
+
 // ---------------- GET HTML ELEMENTS ----------------
 const otpInput = document.getElementById("otpCode");       // OTP input field
 const verifyBtn = document.getElementById("verifyOtpBtn");     // Verify button
@@ -33,7 +37,7 @@ function sendOtp(userName, userEmail) {
     generatedOtp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
     otpExpiry = Date.now() + 15 * 60 * 1000; // OTP expires in 15 minutes
 
-    emailjs.send("service_5fwha32", "template_x9rnj1p", {
+    emailjs.send("service_swosezx", "template_z8kpmhg", {
         user_name: userName,
         passcode: generatedOtp,
         email: userEmail
@@ -49,7 +53,9 @@ function sendOtp(userName, userEmail) {
 }
 
 // ---------------- FUNCTION: VERIFY OTP ----------------
-function verifyOtp() {
+function verifyOtp(e) {
+    e.preventDefault();   // ✅ Prevent form reload
+
     const enteredOtp = otpInput.value.trim();
     const userEmail = localStorage.getItem("userEmail");
 
@@ -89,13 +95,13 @@ function sendWelcomeEmail() {
     const userName = localStorage.getItem("userName");
     const userEmail = localStorage.getItem("userEmail");
 
-    emailjs.send("service_5fwha32", "template_hry0g9a", {
+    emailjs.send("service_swosezx", "template_rjxjl4s", {
         user_name: userName,
         email: userEmail
     })
     .then(() => {
         showMessage("Welcome mail sent! Signup complete.", "success");
-        // Redirect user after success (optional)
+        // Redirect user after success
         setTimeout(() => {
             window.location.href = "./villages-flashcard.html";
         }, 2000);
@@ -156,7 +162,6 @@ window.addEventListener("load", async () => {
                 "error"
             );
             resendBtn.disabled = true;
-            // 🚨 Clear fake localStorage to force fresh signup
             localStorage.removeItem("userName");
             localStorage.removeItem("userEmail");
         }
