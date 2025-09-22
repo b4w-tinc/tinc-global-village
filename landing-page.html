@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="./landing-page-style.css">
 </head>
 <body>
+    <div id="loaderOverlay">
+        <div class="center">
+            <div class="ring"></div>
+            <span>loading...</span>
+        </div>
+    </div>
     <div class="top-container">
 
         <div class="top">
@@ -21,8 +27,8 @@
                 <p>TINC Global Village is the premier platform for building meaningful professional relationships, discovering career opportunities,
                 and staying engaged with your industry.</p>
                 <div class="header-btn">
-                    <a href="./sign-up.html" class="sign-up">Sign Up Now</a>
-                    <a href="./log-in.html" class="log-in">Log In</a>
+                    <a href="./sign-up.html" id="goToSignup" class="sign-up">Sign Up Now</a>
+                    <a href="./log-in.html" id="goToLogin" class="log-in">Log In</a>
                 </div>
             </div>
     
@@ -79,5 +85,7 @@
     <footer>
         <h4>Built by <a href="https://www.devantics.online" target="_blank" rel="norefferrer noopener">Devantics</a></h4>
     </footer>
+
+    <script src="./landing-page.js"></script>
 </body>
 </html>
