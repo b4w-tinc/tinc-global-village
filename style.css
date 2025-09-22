@@ -17,6 +17,28 @@ li{
     list-style-type: none;
 }
 
+#loaderOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    pointer-events: none;
+    /* only blocks clicks when active */
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+#loaderOverlay.active {
+    pointer-events: all;
+    opacity: 1;
+}
+
 .body-container{
     background: linear-gradient(135deg, #2EB5E5, #FFFFFF);
 }

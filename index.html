@@ -7,6 +7,15 @@
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+        <div id="loaderOverlay" class="active">
+            <div class="center">
+                <div class="ring"></div>
+                <span>Loading...</span>
+            </div>
+        </div>
+    
+        
+
     <div class="body-container">
 
         <div class="top">
@@ -48,5 +57,18 @@
     <div class="down">
 
     </div>
+    <script>
+        // Grab loader overlay
+            const loaderOverlay = document.getElementById('loaderOverlay');
+
+            // Page starts with loader visible (HTML has class="active")
+            window.addEventListener('load', () => {
+                // Optional small delay for smooth fade-out
+                setTimeout(() => {
+                    loaderOverlay.classList.remove('active');
+                }, 500); // 500ms fade-out
+            });
+
+    </script>
     </body>
 </html>
