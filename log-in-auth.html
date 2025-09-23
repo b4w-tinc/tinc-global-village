@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Email</title>
+    <link rel="stylesheet" href="./log-in-auth.css">
+</head>
+
+<body>
+
+    <div class="top">
+        <div class="logo">
+            <img src="./tinc logo.jpg" alt="TINC Logo">
+            <h3>B4W.TINC</h3>
+        </div>
+        <header>
+            <h2>Enter OTP</h2>
+            <p>An OTP was sent to the mail you used to sign-up.</p>
+            <p> Pls enter the OTP to verify your email</p>
+        </header>
+        <form id="loginAuth">
+
+            <label for="otpCode">
+                <h3>OTP</h3>
+            </label>
+            <div class="otp-bar">
+                <input type="text" name="OTP" id="otpCode" placeholder="123456" maxlength="6" required>
+                <button type="submit" class="submit" id="verifyOtpBtn">Verify OTP</button>
+            </div>
+            <br><br>
+            <p id="messageBox"></p>
+            <br><br>
+            <input type="checkbox" id="rememberDevice" style="cursor: pointer;">
+            <label for="rememberDevice">Remember Device</label>
+        </form>
+        <p style="margin-left: 20px;">Didn't receive mail? Click button below to request for OTP</p>
+        <button id="sendOtpBtn" class="re-send" id="sendOtpBtn" disabled>Re-send OTP</button>
+        <p id="timerDisplay" style="font-size: 0.9em; color:gray; display: none;">
+            You can request a new OTP in <span id="countdown">60</span> seconds
+        </p>
+    </div>
+    <footer>
+        <ul>
+            <div class="ul-1">
+                <li><a href="./">Legal</a></li>
+                <li><a href="./">Support</a></li>
+            </div>
+            <div class="ul-2">
+                <li><a href="https://www.instagram.com/b4w.tinc?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                        target="_blank" rel="norefferrer noopener"><img
+                            src="./instagram-logo-facebook-2-svgrepo-com (1).svg" alt=""></a></li>
+                <li><a href="./"><img src="./linkedin-logo-svgrepo-com.svg" alt=""></a></li>
+                <li><a href="./"><img src="./twitter-logo-thin-svgrepo-com.svg" alt=""></a></li>
+            </div>
+        </ul>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script src="./log-auth.js"></script>
+</body>
+
+</html>
