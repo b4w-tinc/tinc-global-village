@@ -1,5 +1,5 @@
 (function () {
-    emailjs.init("SJ8FYr5mn_AlPAdup"); // Keep your token as-is
+    emailjs.init("SJ8FYr5mn_AlPAdup"); 
 })();
 
 // ---------------- GET HTML ELEMENTS ----------------
