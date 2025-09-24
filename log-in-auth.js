@@ -65,9 +65,22 @@ function sendOtp(userName, userEmail) {
 async function verifyOtp(e) {
     e.preventDefault();
 
+    // --- GET USER INFO FROM localStorage OR sessionStorage ---
+    let userEmail = localStorage.getItem("userEmail");
+    let userName = localStorage.getItem("userName");
+    
+    if (!userEmail || !userName) {
+        const pending = sessionStorage.getItem("pendingAuthUser");
+        if (pending) {
+            const pendingObj = JSON.parse(pending);
+            userEmail = pendingObj.email;
+            userName = pendingObj.userName || "";
+            localStorage.setItem("userEmail", userEmail);
+            localStorage.setItem("userName", userName);
+        }
+    }
+
     const enteredOtp = otpInput.value.trim();
-    const userEmail = localStorage.getItem("userEmail");
-    const userName = localStorage.getItem("userName");
     const newDeviceId = getDeviceId();
 
     if (!userEmail || !userName) {
@@ -214,16 +227,33 @@ function showMessage(msg, type) {
 // ---------------- EVENT LISTENERS ----------------
 verifyBtn.addEventListener("click", verifyOtp);
 resendBtn.addEventListener("click", () => {
-    const userName = localStorage.getItem("userName");
-    const userEmail = localStorage.getItem("userEmail");
+    let userName = localStorage.getItem("userName");
+    let userEmail = localStorage.getItem("userEmail");
+    
+    if ((!userName || !userEmail) && sessionStorage.getItem("pendingAuthUser")) {
+        const pending = JSON.parse(sessionStorage.getItem("pendingAuthUser"));
+        userEmail = pending.email;
+        userName = pending.userName || "";
+        localStorage.setItem("userEmail", userEmail);
+        localStorage.setItem("userName", userName);
+    }
+
     if (userName && userEmail) sendOtp(userName, userEmail);
     else showMessage("Missing user info. Cannot resend OTP.", "error");
 });
 
 // ---------------- AUTO SEND OTP ON PAGE LOAD ----------------
 window.addEventListener("load", async () => {
-    const userName = localStorage.getItem("userName");
-    const userEmail = localStorage.getItem("userEmail");
+    let userName = localStorage.getItem("userName");
+    let userEmail = localStorage.getItem("userEmail");
+
+    if ((!userName || !userEmail) && sessionStorage.getItem("pendingAuthUser")) {
+        const pending = JSON.parse(sessionStorage.getItem("pendingAuthUser"));
+        userEmail = pending.email;
+        userName = pending.userName || "";
+        localStorage.setItem("userEmail", userEmail);
+        localStorage.setItem("userName", userName);
+    }
 
     if (userName && userEmail) {
         const user = await getUserFromSheet(userEmail);
