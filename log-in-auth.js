@@ -1,14 +1,14 @@
 (function () {
-    emailjs.init("n2ck3LYOGt_XTSnvy")
+    emailjs.init("SJ8FYr5mn_AlPAdup");
 })();
 
 // ---------------- GET HTML ELEMENTS ----------------
-const otpInput = document.getElementById("otpCode");       // OTP input field
-const verifyBtn = document.getElementById("verifyOtpBtn");     // Verify button
-const resendBtn = document.getElementById("sendOtpBtn");     // Resend OTP button
-const messageBox = document.getElementById("messageBox");   // For showing success/error messages
-const timerBox = document.getElementById("timerDisplay");       // Box holding the countdown message
-const countdownSpan = document.getElementById("countdown"); // Countdown number display
+const otpInput = document.getElementById("otpCode");
+const verifyBtn = document.getElementById("verifyOtpBtn");
+const resendBtn = document.getElementById("sendOtpBtn");
+const messageBox = document.getElementById("messageBox");
+const timerBox = document.getElementById("timerDisplay");
+const countdownSpan = document.getElementById("countdown");
 
 // ---------------- VARIABLES ----------------
 let generatedOtp;
@@ -18,33 +18,34 @@ let cooldownInterval;
 // ---------------- SHEETDB URL ----------------
 const SHEETDB_URL = "https://sheetdb.io/api/v1/tsa10q47pdryu"; 
 
-// ---------------- FUNCTION: CHECK USER IN SHEETDB ----------------
-async function userExistsInSheet(email) {
+// ---------------- IPINFO API KEY ----------------
+const IPINFO_TOKEN = "39e54df78a2594"; 
+
+// ---------------- FUNCTION: GET USER FROM SHEETDB ----------------
+async function getUserFromSheet(email) {
     try {
-        const res = await fetch(`${SHEETDB_URL}/search?Email=${encodeURIComponent(email)}`, {
-            method: "GET",
-        });
+        const res = await fetch(`${SHEETDB_URL}/search?Email=${encodeURIComponent(email)}`);
         const data = await res.json();
-        return data.length > 0;
+        return data.length > 0 ? data[0] : null;
     } catch (err) {
         console.error("Error checking user in SheetDB:", err);
-        return false;
+        return null;
     }
 }
 
 // ---------------- FUNCTION: SEND OTP ----------------
 function sendOtp(userName, userEmail) {
-    generatedOtp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-    otpExpiry = Date.now() + 15 * 60 * 1000; // OTP expires in 15 minutes
+    generatedOtp = Math.floor(100000 + Math.random() * 900000);
+    otpExpiry = Date.now() + 15 * 60 * 1000; // 15 mins
 
-    emailjs.send("service_swosezx", "template_z8kpmhg", {
+    emailjs.send("service_5fwha32", "template_x9rnj1p", {
         user_name: userName,
         passcode: generatedOtp,
         email: userEmail
     })
     .then(() => {
         showMessage(`OTP sent to ${userEmail}`, "success");
-        startResendCooldown(); // Start 60s cooldown
+        startResendCooldown();
     })
     .catch((error) => {
         showMessage("Failed to send OTP. Try again.", "error");
@@ -53,11 +54,13 @@ function sendOtp(userName, userEmail) {
 }
 
 // ---------------- FUNCTION: VERIFY OTP ----------------
-function verifyOtp(e) {
-    e.preventDefault();   // ✅ Prevent form reload
+async function verifyOtp(e) {
+    e.preventDefault();
 
     const enteredOtp = otpInput.value.trim();
     const userEmail = localStorage.getItem("userEmail");
+    const userName = localStorage.getItem("userName");
+    const newDeviceId = localStorage.getItem("currentDeviceId");
 
     if (!enteredOtp) {
         showMessage("Please enter the OTP.", "error");
@@ -70,54 +73,113 @@ function verifyOtp(e) {
     }
 
     if (enteredOtp == generatedOtp) {
-        // Update user in SheetDB: set Verified = true
+        const user = await getUserFromSheet(userEmail);
+        if (!user) {
+            showMessage("User not found in database.", "error");
+            return;
+        }
+
+        // Append new device ID if not already stored
+        let existingDevices = user["Device Info"] ? user["Device Info"].split(",") : [];
+        if (!existingDevices.includes(newDeviceId)) {
+            existingDevices.push(newDeviceId);
+        }
+        const updatedDevices = existingDevices.join(",");
+
+        // Update the row in SheetDB
         fetch(`${SHEETDB_URL}/Email/${encodeURIComponent(userEmail)}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: { Verified: "true" } }),
+            body: JSON.stringify({ data: { "Device Info": updatedDevices } }),
         })
         .then(res => res.json())
         .then(() => {
-            showMessage("OTP verified successfully!", "success");
-            sendWelcomeEmail();
+            showMessage("Device verified successfully!", "success");
+            sendLoginNotification(userName, userEmail);
         })
         .catch((err) => {
-            showMessage("Verification succeeded locally, but failed to update database.", "error");
+            showMessage("Device verified locally, but failed to update database.", "error");
             console.error("SheetDB Update Error:", err);
         });
+
     } else {
         showMessage("Invalid OTP. Try again.", "error");
     }
 }
 
-// ---------------- FUNCTION: SEND WELCOME MAIL ----------------
-function sendWelcomeEmail() {
-    const userName = localStorage.getItem("userName");
-    const userEmail = localStorage.getItem("userEmail");
+// ---------------- FUNCTION: SEND LOGIN NOTIFICATION ----------------
+async function sendLoginNotification(userName, userEmail) {
+    try {
+        // Get location data from ipinfo.io
+        const locationRes = await fetch(`https://ipinfo.io/json?token=${IPINFO_TOKEN}`);
+        const locationData = await locationRes.json();
 
-    emailjs.send("service_swosezx", "template_rjxjl4s", {
-        user_name: userName,
-        email: userEmail
-    })
-    .then(() => {
-        showMessage("Welcome mail sent! Signup complete.", "success");
-        // Redirect user after success
-        setTimeout(() => {
-            window.location.href = "./villages-flashcard.html";
-        }, 2000);
-    })
-    .catch((error) => {
-        showMessage("Signup complete, but failed to send welcome mail.", "error");
-        console.error("EmailJS Error:", error);
-    });
+        const location = locationData.city && locationData.country
+            ? `${locationData.city}, ${locationData.country}`
+            : "Unknown location";
+
+        const isp = locationData.org || "Unknown ISP";
+
+        // Detect device/browser
+        const ua = navigator.userAgent;
+        let device = "Unknown Device";
+        if (ua.includes("Windows")) device = "Windows PC";
+        else if (ua.includes("Mac")) device = "Mac";
+        else if (ua.includes("Android")) device = "Android Phone";
+        else if (ua.includes("iPhone")) device = "iPhone";
+        else if (ua.includes("iPad")) device = "iPad";
+
+        let browser = "Unknown Browser";
+        if (ua.includes("Chrome")) browser = "Chrome";
+        else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
+        else if (ua.includes("Firefox")) browser = "Firefox";
+        else if (ua.includes("Edge")) browser = "Edge";
+
+        const deviceInfo = `${browser} on ${device}`;
+
+        // Format login time
+        const time = new Date().toLocaleString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+            timeZoneName: "short"
+        });
+
+        // Send EmailJS notification
+        emailjs.send("service_5fwha32", "template_jkktmer", {
+            user_name: userName,
+            email: userEmail,
+            device: deviceInfo,
+            location: location,
+            isp: isp,
+            time: time
+        })
+        .then(() => {
+            showMessage("Login verified mail sent!", "success");
+            setTimeout(() => {
+                window.location.href = "./global-feed.html";
+            }, 2000);
+        })
+        .catch((error) => {
+            showMessage("Login complete, but failed to send mail.", "error");
+            console.error("EmailJS Error:", error);
+        });
+    } catch (err) {
+        console.error("Error fetching location:", err);
+        showMessage("Login complete, but location fetch failed.", "error");
+    }
 }
 
 // ---------------- FUNCTION: START RESEND COOLDOWN ----------------
 function startResendCooldown() {
     resendBtn.disabled = true;
-    timerBox.style.display = "block"; // Show countdown message
+    timerBox.style.display = "block";
 
-    let timeLeft = 60; // 60s cooldown
+    let timeLeft = 60;
     countdownSpan.textContent = timeLeft;
 
     cooldownInterval = setInterval(() => {
@@ -127,14 +189,14 @@ function startResendCooldown() {
         if (timeLeft <= 0) {
             clearInterval(cooldownInterval);
             resendBtn.disabled = false;
-            timerBox.style.display = "none"; // Hide message
+            timerBox.style.display = "none";
         }
     }, 1000);
 }
 
 // ---------------- FUNCTION: SHOW MESSAGE ----------------
 function showMessage(msg, type) {
-    messageBox.innerHTML = msg;  // ✅ Allow clickable HTML
+    messageBox.innerHTML = msg;
     messageBox.style.color = type === "success" ? "green" : "red";
     messageBox.style.display = "block";
 }
@@ -153,12 +215,12 @@ window.addEventListener("load", async () => {
     const userEmail = localStorage.getItem("userEmail");
 
     if (userName && userEmail) {
-        const exists = await userExistsInSheet(userEmail);
-        if (exists) {
-            sendOtp(userName, userEmail); // Auto send OTP when page loads
+        const user = await getUserFromSheet(userEmail);
+        if (user) {
+            sendOtp(userName, userEmail);
         } else {
             showMessage(
-                `User not found in database. Please <a href="./sign-up.html" style="color: blue; text-decoration: underline;">go back to signup</a>.`,
+                `User not found. Please <a href="./sign-up.html" style="color: blue; text-decoration: underline;">go back to signup</a>.`,
                 "error"
             );
             resendBtn.disabled = true;
