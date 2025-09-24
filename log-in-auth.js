@@ -1,5 +1,5 @@
 (function () {
-    emailjs.init("SJ8FYr5mn_AlPAdup");
+    emailjs.init("SJ8FYr5mn_AlPAdup"); // Keep your token as-is
 })();
 
 // ---------------- GET HTML ELEMENTS ----------------
@@ -11,15 +11,21 @@ const timerBox = document.getElementById("timerDisplay");
 const countdownSpan = document.getElementById("countdown");
 
 // ---------------- VARIABLES ----------------
-let generatedOtp;
-let otpExpiry;
 let cooldownInterval;
 
 // ---------------- SHEETDB URL ----------------
 const SHEETDB_URL = "https://sheetdb.io/api/v1/tsa10q47pdryu"; 
+const IPINFO_TOKEN = "39e54df78a2594"; // Keep your token as-is
 
-// ---------------- IPINFO API KEY ----------------
-const IPINFO_TOKEN = "39e54df78a2594"; 
+// ---------------- UTILITY: GET DEVICE ID ----------------
+function getDeviceId() {
+    let deviceId = localStorage.getItem("deviceId");
+    if (!deviceId) {
+        deviceId = crypto.randomUUID();
+        localStorage.setItem("deviceId", deviceId);
+    }
+    return deviceId;
+}
 
 // ---------------- FUNCTION: GET USER FROM SHEETDB ----------------
 async function getUserFromSheet(email) {
@@ -35,8 +41,12 @@ async function getUserFromSheet(email) {
 
 // ---------------- FUNCTION: SEND OTP ----------------
 function sendOtp(userName, userEmail) {
-    generatedOtp = Math.floor(100000 + Math.random() * 900000);
-    otpExpiry = Date.now() + 15 * 60 * 1000; // 15 mins
+    // Generate new OTP & persist it
+    const generatedOtp = Math.floor(100000 + Math.random() * 900000);
+    const otpExpiry = Date.now() + 15 * 60 * 1000;
+
+    sessionStorage.setItem("generatedOtp", generatedOtp);
+    sessionStorage.setItem("otpExpiry", otpExpiry);
 
     emailjs.send("service_5fwha32", "template_x9rnj1p", {
         user_name: userName,
@@ -60,10 +70,23 @@ async function verifyOtp(e) {
     const enteredOtp = otpInput.value.trim();
     const userEmail = localStorage.getItem("userEmail");
     const userName = localStorage.getItem("userName");
-    const newDeviceId = localStorage.getItem("currentDeviceId");
+    const newDeviceId = getDeviceId();
+
+    if (!userEmail || !userName) {
+        showMessage("Missing user info. Please go back and login again.", "error");
+        return;
+    }
 
     if (!enteredOtp) {
         showMessage("Please enter the OTP.", "error");
+        return;
+    }
+
+    const generatedOtp = sessionStorage.getItem("generatedOtp");
+    const otpExpiry = Number(sessionStorage.getItem("otpExpiry"));
+
+    if (!generatedOtp || !otpExpiry) {
+        showMessage("OTP not generated. Please resend.", "error");
         return;
     }
 
@@ -79,28 +102,33 @@ async function verifyOtp(e) {
             return;
         }
 
-        // Append new device ID if not already stored
-        let existingDevices = user["Device Info"] ? user["Device Info"].split(",") : [];
+        // Parse existing devices JSON safely
+        let existingDevices = [];
+        try {
+            existingDevices = user["Device Info"] ? JSON.parse(user["Device Info"]) : [];
+            if (!Array.isArray(existingDevices)) existingDevices = [];
+        } catch {
+            existingDevices = [];
+        }
+
         if (!existingDevices.includes(newDeviceId)) {
             existingDevices.push(newDeviceId);
         }
-        const updatedDevices = existingDevices.join(",");
 
-        // Update the row in SheetDB
-        fetch(`${SHEETDB_URL}/Email/${encodeURIComponent(userEmail)}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: { "Device Info": updatedDevices } }),
-        })
-        .then(res => res.json())
-        .then(() => {
+        // Update SheetDB
+        try {
+            await fetch(`${SHEETDB_URL}/Email/${encodeURIComponent(userEmail)}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ data: { "Device Info": JSON.stringify(existingDevices) } }),
+            });
+
             showMessage("Device verified successfully!", "success");
             sendLoginNotification(userName, userEmail);
-        })
-        .catch((err) => {
+        } catch (err) {
             showMessage("Device verified locally, but failed to update database.", "error");
             console.error("SheetDB Update Error:", err);
-        });
+        }
 
     } else {
         showMessage("Invalid OTP. Try again.", "error");
@@ -110,7 +138,7 @@ async function verifyOtp(e) {
 // ---------------- FUNCTION: SEND LOGIN NOTIFICATION ----------------
 async function sendLoginNotification(userName, userEmail) {
     try {
-        // Get location data from ipinfo.io
+        // Fetch location info
         const locationRes = await fetch(`https://ipinfo.io/json?token=${IPINFO_TOKEN}`);
         const locationData = await locationRes.json();
 
@@ -123,21 +151,20 @@ async function sendLoginNotification(userName, userEmail) {
         // Detect device/browser
         const ua = navigator.userAgent;
         let device = "Unknown Device";
-        if (ua.includes("Windows")) device = "Windows PC";
-        else if (ua.includes("Mac")) device = "Mac";
-        else if (ua.includes("Android")) device = "Android Phone";
-        else if (ua.includes("iPhone")) device = "iPhone";
-        else if (ua.includes("iPad")) device = "iPad";
+        if (/Windows/i.test(ua)) device = "Windows PC";
+        else if (/Mac/i.test(ua)) device = "Mac";
+        else if (/Android/i.test(ua)) device = "Android Phone";
+        else if (/iPhone/i.test(ua)) device = "iPhone";
+        else if (/iPad/i.test(ua)) device = "iPad";
 
         let browser = "Unknown Browser";
-        if (ua.includes("Chrome")) browser = "Chrome";
-        else if (ua.includes("Safari") && !ua.includes("Chrome")) browser = "Safari";
-        else if (ua.includes("Firefox")) browser = "Firefox";
-        else if (ua.includes("Edge")) browser = "Edge";
+        if (/Chrome/i.test(ua)) browser = "Chrome";
+        else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = "Safari";
+        else if (/Firefox/i.test(ua)) browser = "Firefox";
+        else if (/Edge/i.test(ua)) browser = "Edge";
 
         const deviceInfo = `${browser} on ${device}`;
 
-        // Format login time
         const time = new Date().toLocaleString("en-US", {
             weekday: "long",
             year: "numeric",
@@ -149,28 +176,23 @@ async function sendLoginNotification(userName, userEmail) {
             timeZoneName: "short"
         });
 
-        // Send EmailJS notification
-        emailjs.send("service_5fwha32", "template_jkktmer", {
+        await emailjs.send("service_5fwha32", "template_jkktmer", {
             user_name: userName,
             email: userEmail,
             device: deviceInfo,
             location: location,
             isp: isp,
             time: time
-        })
-        .then(() => {
-            showMessage("Login verified mail sent!", "success");
-            setTimeout(() => {
-                window.location.href = "./global-feed.html";
-            }, 2000);
-        })
-        .catch((error) => {
-            showMessage("Login complete, but failed to send mail.", "error");
-            console.error("EmailJS Error:", error);
         });
+
+        showMessage("Login verified mail sent!", "success");
+        setTimeout(() => {
+            window.location.href = "./global-feed.html";
+        }, 2000);
+
     } catch (err) {
-        console.error("Error fetching location:", err);
-        showMessage("Login complete, but location fetch failed.", "error");
+        console.error("Error in login notification:", err);
+        showMessage("Login complete, but some info could not be fetched.", "error");
     }
 }
 
@@ -206,7 +228,8 @@ verifyBtn.addEventListener("click", verifyOtp);
 resendBtn.addEventListener("click", () => {
     const userName = localStorage.getItem("userName");
     const userEmail = localStorage.getItem("userEmail");
-    sendOtp(userName, userEmail);
+    if (userName && userEmail) sendOtp(userName, userEmail);
+    else showMessage("Missing user info. Cannot resend OTP.", "error");
 });
 
 // ---------------- AUTO SEND OTP ON PAGE LOAD ----------------
