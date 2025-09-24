@@ -13,18 +13,20 @@ async function hashPassword(password) {
     return hashHex;
 }
 
-// 🔑 Utility: Generate a simple device ID (browser fingerprint-lite)
+// 🔑 Utility: Get or create a persistent device ID stored in localStorage
 function getDeviceId() {
-    const ua = navigator.userAgent;
-    const platform = navigator.platform;
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    const raw = ua + platform + timezone;
-    let hash = 0;
-    for (let i = 0; i < raw.length; i++) {
-        hash = ((hash << 5) - hash) + raw.charCodeAt(i);
-        hash |= 0; // Convert to 32bit int
+    // Use the deviceId saved at signup (or saved earlier). This ensures signup & login use same id on same browser.
+    let deviceId = localStorage.getItem('deviceId');
+    if (deviceId && deviceId.toString().trim() !== "") return deviceId;
+
+    // If none saved, generate one and store it (fallback for older clients)
+    if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+        deviceId = crypto.randomUUID();
+    } else {
+        deviceId = 'dev-' + Math.random().toString(36).slice(2, 12);
     }
-    return "dev-" + Math.abs(hash);
+    localStorage.setItem('deviceId', deviceId);
+    return deviceId;
 }
 
 const SHEETDB_URL = "https://sheetdb.io/api/v1/tsa10q47pdryu";
@@ -69,20 +71,32 @@ if (loginForm) {
                 return;
             }
 
-            // 🔑 Device ID check
+            // 🔑 Device ID check (robust parsing of "Device Info")
             const currentDeviceId = getDeviceId();
 
-            // Devices stored as comma-separated values in "Device Info"
+            // Parse Device Info field (supports JSON array or comma-separated list)
             let userDevices = [];
-            if (user["Device Info"] && user["Device Info"].trim() !== "") {
-                userDevices = user["Device Info"]
-                    .split(",")
-                    .map(d => d.trim())
-                    .filter(Boolean);
+            const raw = user["Device Info"];
+
+            if (raw && raw.toString().trim() !== "") {
+                try {
+                    // Try JSON.parse first (handles ["id1","id2"])
+                    const parsed = JSON.parse(raw);
+                    if (Array.isArray(parsed)) {
+                        userDevices = parsed.map(d => d + '').map(s => s.trim()).filter(Boolean);
+                    } else if (typeof parsed === 'string') {
+                        userDevices = parsed.split(',').map(d => d.trim()).filter(Boolean);
+                    }
+                } catch (e) {
+                    // Not valid JSON — fallback to comma-split (handles "id1, id2")
+                    userDevices = raw.toString().split(',').map(d => d.trim()).filter(Boolean);
+                }
             }
 
+            // If currentDeviceId not found, treat as new device
             if (!userDevices.includes(currentDeviceId)) {
                 // New device → redirect to login-auth page
+                // We store only what we need for the next step; do NOT add device to DB here.
                 sessionStorage.setItem("pendingAuthUser", JSON.stringify({
                     email,
                     hashedPassword,
