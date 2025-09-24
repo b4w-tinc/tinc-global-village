@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <link rel="stylesheet" href="./log-in-style.css">
+</head>
+
+<body>
+
+    <div id="loaderOverlay">
+        <div class="center">
+            <div class="ring"></div>
+            <span>Loading...</span>
+        </div>
+    </div>
+
+    <div class="top">
+        <div class="logo">
+            <img src="./tinc logo.jpg" alt="TINC Logo">
+            <h3>B4W.TINC</h3>
+        </div>
+        <header>
+            <h2>Reset Password</h2>
+            <p>An OTP was sent to the mail you used to sign-up.</p>
+            <p> Pls enter the OTP to verify your device</p>
+        </header>
+
+        <form id="logIn">
+            <label for="loginEmail">
+                <h3>Email</h3>
+            </label>
+            <input type="email" class="form-span" name="Full Name" id="loginEmail" placeholder="Enter the mail you used to signup"
+                required>
+            <br><br>
+            <label for="logiPassword">
+                <h3>Password</h3>
+            </label>
+            <input type="password" class="form-span" name="Password" id="loginPassword"
+                placeholder="Enter your Password" required>
+            <br><br>
+            <input type="checkbox" name="check-password" id="checkPassword" style="cursor: pointer;">
+            <label for="checkPassword" id="toggleLabel">Show Password</label>
+            <br><br>
+            <input type="checkbox" name="agreement" id="agreement" required style="cursor: pointer;">
+            <label for="agreement" id="agreement" class="agreement">I agree to the <a href="./terms-of-service.txt"
+                    target="_blank" rel="noopener norefferrer">Terms of Service</a> and <a href="./privacy-policy.txt"
+                    target="_blank" rel="noopener norefferrer">Privacy Policy</a></label>
+            <br><br>
+            <div class="forgot-pw">
+                <a href="./forgot-pw.html">
+                    <p>Forgot Password</p>
+                </a>
+            </div>
+            <br><br>
+            <div class="form-btn">
+                <button type="submit" class="submit"> Log In </button>
+            </div>
+        </form>
+        <div class="sign-up-redirect">
+            <p>Don't have an account? <a href="./sign-up.html">Sign Up</a></p>
+        </div>
+    </div>
+
+    <footer>
+        <ul>
+            <div class="ul-1">
+                <li><a href="./">Legal</a></li>
+                <li><a href="./">Support</a></li>
+            </div>
+            <div class="ul-2">
+                <li><a href="https://www.instagram.com/b4w.tinc?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                        target="_blank" rel="norefferrer noopener"><img
+                            src="./instagram-logo-facebook-2-svgrepo-com (1).svg" alt=""></a></li>
+                <li><a href="./"><img src="./linkedin-logo-svgrepo-com.svg" alt=""></a></li>
+                <li><a href="./"><img src="./twitter-logo-thin-svgrepo-com.svg" alt=""></a></li>
+            </div>
+        </ul>
+    </footer>
+    <script src="./log-in-script.js"></script>
+</body>
+
+</html>

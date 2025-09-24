@@ -15,7 +15,6 @@ let cooldownInterval;
 
 // ---------------- SHEETDB URL ----------------
 const SHEETDB_URL = "https://sheetdb.io/api/v1/tsa10q47pdryu"; 
-const IPINFO_TOKEN = "39e54df78a2594"; // Keep your token as-is
 
 // ---------------- UTILITY: GET DEVICE ID ----------------
 function getDeviceId() {
@@ -41,7 +40,6 @@ async function getUserFromSheet(email) {
 
 // ---------------- FUNCTION: SEND OTP ----------------
 function sendOtp(userName, userEmail) {
-    // Generate new OTP & persist it
     const generatedOtp = Math.floor(100000 + Math.random() * 900000);
     const otpExpiry = Date.now() + 15 * 60 * 1000;
 
@@ -102,7 +100,6 @@ async function verifyOtp(e) {
             return;
         }
 
-        // Parse existing devices JSON safely
         let existingDevices = [];
         try {
             existingDevices = user["Device Info"] ? JSON.parse(user["Device Info"]) : [];
@@ -115,7 +112,6 @@ async function verifyOtp(e) {
             existingDevices.push(newDeviceId);
         }
 
-        // Update SheetDB
         try {
             await fetch(`${SHEETDB_URL}/Email/${encodeURIComponent(userEmail)}`, {
                 method: "PATCH",
@@ -136,19 +132,8 @@ async function verifyOtp(e) {
 }
 
 // ---------------- FUNCTION: SEND LOGIN NOTIFICATION ----------------
-async function sendLoginNotification(userName, userEmail) {
+function sendLoginNotification(userName, userEmail) {
     try {
-        // Fetch location info
-        const locationRes = await fetch(`https://ipinfo.io/json?token=${IPINFO_TOKEN}`);
-        const locationData = await locationRes.json();
-
-        const location = locationData.city && locationData.country
-            ? `${locationData.city}, ${locationData.country}`
-            : "Unknown location";
-
-        const isp = locationData.org || "Unknown ISP";
-
-        // Detect device/browser
         const ua = navigator.userAgent;
         let device = "Unknown Device";
         if (/Windows/i.test(ua)) device = "Windows PC";
@@ -163,8 +148,6 @@ async function sendLoginNotification(userName, userEmail) {
         else if (/Firefox/i.test(ua)) browser = "Firefox";
         else if (/Edge/i.test(ua)) browser = "Edge";
 
-        const deviceInfo = `${browser} on ${device}`;
-
         const time = new Date().toLocaleString("en-US", {
             weekday: "long",
             year: "numeric",
@@ -176,22 +159,27 @@ async function sendLoginNotification(userName, userEmail) {
             timeZoneName: "short"
         });
 
-        await emailjs.send("service_5fwha32", "template_jkktmer", {
+        const deviceInfo = `${browser} on ${device}`;
+
+        emailjs.send("service_5fwha32", "template_jkktmer", {
             user_name: userName,
             email: userEmail,
             device: deviceInfo,
-            location: location,
-            isp: isp,
             time: time
+        })
+        .then(() => {
+            showMessage("Login verified mail sent!", "success");
+            setTimeout(() => {
+                window.location.href = "./global-feed.html";
+            }, 2000);
+        })
+        .catch((err) => {
+            showMessage("Login complete, but email could not be sent.", "error");
+            console.error("EmailJS Error:", err);
         });
 
-        showMessage("Login verified mail sent!", "success");
-        setTimeout(() => {
-            window.location.href = "./global-feed.html";
-        }, 2000);
-
     } catch (err) {
-        console.error("Error in login notification:", err);
+        console.error("Error sending login notification:", err);
         showMessage("Login complete, but some info could not be fetched.", "error");
     }
 }
