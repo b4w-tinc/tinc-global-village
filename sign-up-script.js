@@ -100,7 +100,7 @@ form.addEventListener("submit", async function(event) {
                         "PasswordHash": hashedPass,
                         "Signup Date": new Date().toISOString(),
                         "Verified": "false", // not verified until OTP
-                        "Device Info": deviceId,
+                        "Device Info": JSON.stringify([deviceId]), // ✅ stored as array
                         "OTP Attempts": 0
                     }
                 })

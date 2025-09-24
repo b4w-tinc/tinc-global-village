@@ -71,11 +71,14 @@ if (loginForm) {
 
             // 🔑 Device ID check
             const currentDeviceId = getDeviceId();
+
+            // Devices stored as comma-separated values in "Device Info"
             let userDevices = [];
-            try {
-                userDevices = JSON.parse(user["Devices"] || "[]"); // Devices stored as JSON array in SheetDB
-            } catch {
-                userDevices = [];
+            if (user["Device Info"] && user["Device Info"].trim() !== "") {
+                userDevices = user["Device Info"]
+                    .split(",")
+                    .map(d => d.trim())
+                    .filter(Boolean);
             }
 
             if (!userDevices.includes(currentDeviceId)) {
@@ -86,7 +89,7 @@ if (loginForm) {
                     currentDeviceId
                 }));
                 alert("We detected a login from a new device. Please verify with OTP.");
-                window.location.href = "./log-in-auth.html"; 
+                window.location.href = "./log-in-auth.html";
                 return;
             }
 
