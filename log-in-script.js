@@ -34,3 +34,9 @@ if (showPassword && loginPassword) {
         }
     });
 }
+
+// ---------------- FIX: RESET LOADER ON HISTORY NAVIGATION ----------------
+window.addEventListener("pageshow", (event) => {
+    const loader = document.getElementById("loaderOverlay");
+    if (loader) loader.classList.remove("active");
+});
