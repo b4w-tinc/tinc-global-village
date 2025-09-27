@@ -1,8 +1,21 @@
+// login.js - loader + submit + show/hide password + robust pageshow handling
+
 const loginForm = document.getElementById("logIn");
 const loginPassword = document.getElementById("loginPassword");
 const showPassword = document.getElementById("checkPassword");
 const toggleLabel = document.getElementById("toggleLabel");
 const loaderOverlay = document.getElementById("loaderOverlay"); // Loader element
+
+// --- HELPERS: show/hide loader (single source of truth) ---
+function showLoader() {
+    if (!loaderOverlay) return;
+    loaderOverlay.classList.add("active");
+}
+
+function hideLoader() {
+    if (!loaderOverlay) return;
+    loaderOverlay.classList.remove("active");
+}
 
 // --- FORM SUBMISSION ---
 if (loginForm) {
@@ -10,16 +23,16 @@ if (loginForm) {
         event.preventDefault();
 
         // Show loader
-        if (loaderOverlay) loaderOverlay.classList.add("active");
+        showLoader();
 
-        // Simulate login success
-        alert("Login successful!");
-        window.location.href = "./global-feed.html";
-
-        // Hide loader after small delay (simulate processing)
+        // Simulate login success (frontend-only)
+        // NOTE: in real app you would await server response here
         setTimeout(() => {
-            if (loaderOverlay) loaderOverlay.classList.remove("active");
-        }, 1200);
+            // For clarity: hide loader just before navigation attempt
+            hideLoader();
+            alert("Login successful!");
+            window.location.href = "./global-feed.html";
+        }, 900); // small simulated processing delay
     });
 }
 
@@ -36,12 +49,39 @@ if (showPassword && loginPassword) {
 }
 
 // ---------------- FIX: RESET LOADER ON HISTORY NAVIGATION ----------------
-window.addEventListener("pageshow", (event) => {
-    const loader = document.getElementById("loaderOverlay");
-    if (loader) loader.classList.remove("active");
+// Purpose: handle bfcache (pageshow restore), popstate, and normal loads.
+// Put this at the bottom so it always runs after other handlers.
 
-    // Optional: force reload if page was cached
-    if (event.persisted) {
-        window.location.reload();
+(function loaderNavFix() {
+    const loader = loaderOverlay; // may be null
+
+    function ensureHidden(reason) {
+        if (!loader) {
+            console.debug("loaderNavFix: no #loaderOverlay in DOM (reason:", reason, ")");
+            return;
+        }
+        // Remove active class (this keeps CSS transitions intact)
+        loader.classList.remove("active");
+        console.debug("loaderNavFix: hid loader (reason:", reason, ")");
     }
-});
+
+    // Hide as soon as DOM is ready (covers fresh loads)
+    document.addEventListener("DOMContentLoaded", () => ensureHidden("DOMContentLoaded"));
+
+    // Handle pageshow (fires on back/forward and normal loads)
+    window.addEventListener("pageshow", (event) => {
+        ensureHidden("pageshow");
+        // Safari / some browsers restore from bfcache and still show weird state.
+        // Do a tiny delayed hide as a safety net.
+        setTimeout(() => ensureHidden("pageshow-delayed"), 50);
+
+        // Optional: if you prefer to force a full reload for bfcache restores uncomment below:
+        // if (event.persisted) window.location.reload();
+    });
+
+    // Also hide on popstate (history navigation)
+    window.addEventListener("popstate", () => ensureHidden("popstate"));
+
+    // Finally, a fallback after 250ms in case edge cases slip through
+    setTimeout(() => ensureHidden("fallback-250ms"), 250);
+})();
