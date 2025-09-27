@@ -1,210 +1,22 @@
-(function () {
-    emailjs.init("SJ8FYr5mn_AlPAdup"); 
-})();
-
-// ---------------- GET HTML ELEMENTS ----------------
-const otpInput = document.getElementById("otpCode");
-const verifyBtn = document.getElementById("verifyOtpBtn");
 const resendBtn = document.getElementById("sendOtpBtn");
-const messageBox = document.getElementById("messageBox");
 const timerBox = document.getElementById("timerDisplay");
 const countdownSpan = document.getElementById("countdown");
 
-// ---------------- VARIABLES ----------------
 let cooldownInterval;
+const MAX_ATTEMPTS = 3;
+const WINDOW_MS = 10 * 60 * 1000; // 10 minutes in ms
 
-// ---------------- SHEETDB URL ----------------
-const SHEETDB_URL = "https://sheetdb.io/api/v1/tsa10q47pdryu"; 
-
-// ---------------- UTILITY: GET DEVICE ID ----------------
-function getDeviceId() {
-    let deviceId = localStorage.getItem("deviceId");
-    if (!deviceId) {
-        deviceId = crypto.randomUUID();
-        localStorage.setItem("deviceId", deviceId);
-    }
-    return deviceId;
-}
-
-// ---------------- FUNCTION: GET USER FROM SHEETDB ----------------
-async function getUserFromSheet(email) {
-    try {
-        const res = await fetch(`${SHEETDB_URL}/search?Email=${encodeURIComponent(email)}`);
-        const data = await res.json();
-        return data.length > 0 ? data[0] : null;
-    } catch (err) {
-        console.error("Error checking user in SheetDB:", err);
-        return null;
-    }
-}
-
-// ---------------- FUNCTION: SEND OTP ----------------
-function sendOtp(userName, userEmail) {
-    const generatedOtp = Math.floor(100000 + Math.random() * 900000);
-    const otpExpiry = Date.now() + 15 * 60 * 1000;
-
-    sessionStorage.setItem("generatedOtp", generatedOtp);
-    sessionStorage.setItem("otpExpiry", otpExpiry);
-
-    emailjs.send("service_5fwha32", "template_x9rnj1p", {
-        user_name: userName,
-        passcode: generatedOtp,
-        email: userEmail
-    })
-    .then(() => {
-        showMessage(`OTP sent to ${userEmail}`, "success");
-        startResendCooldown();
-    })
-    .catch((error) => {
-        showMessage("Failed to send OTP. Try again.", "error");
-        console.error("EmailJS Error:", error);
-    });
-}
-
-// ---------------- FUNCTION: VERIFY OTP ----------------
-async function verifyOtp(e) {
-    e.preventDefault();
-
-    // --- GET USER INFO FROM localStorage OR sessionStorage ---
-    let userEmail = localStorage.getItem("userEmail");
-    let userName = localStorage.getItem("userName");
-    
-    if (!userEmail || !userName) {
-        const pending = sessionStorage.getItem("pendingAuthUser");
-        if (pending) {
-            const pendingObj = JSON.parse(pending);
-            userEmail = pendingObj.email;
-            userName = pendingObj.userName || "";
-            localStorage.setItem("userEmail", userEmail);
-            localStorage.setItem("userName", userName);
-        }
-    }
-
-    const enteredOtp = otpInput.value.trim();
-    const newDeviceId = getDeviceId();
-
-    if (!userEmail || !userName) {
-        showMessage("Missing user info. Please go back and login again.", "error");
-        return;
-    }
-
-    if (!enteredOtp) {
-        showMessage("Please enter the OTP.", "error");
-        return;
-    }
-
-    const generatedOtp = sessionStorage.getItem("generatedOtp");
-    const otpExpiry = Number(sessionStorage.getItem("otpExpiry"));
-
-    if (!generatedOtp || !otpExpiry) {
-        showMessage("OTP not generated. Please resend.", "error");
-        return;
-    }
-
-    if (Date.now() > otpExpiry) {
-        showMessage("OTP expired. Request a new one.", "error");
-        return;
-    }
-
-    if (enteredOtp == generatedOtp) {
-        const user = await getUserFromSheet(userEmail);
-        if (!user) {
-            showMessage("User not found in database.", "error");
-            return;
-        }
-
-        let existingDevices = [];
-        try {
-            existingDevices = user["Device Info"] ? JSON.parse(user["Device Info"]) : [];
-            if (!Array.isArray(existingDevices)) existingDevices = [];
-        } catch {
-            existingDevices = [];
-        }
-
-        if (!existingDevices.includes(newDeviceId)) {
-            existingDevices.push(newDeviceId);
-        }
-
-        try {
-            await fetch(`${SHEETDB_URL}/Email/${encodeURIComponent(userEmail)}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ data: { "Device Info": JSON.stringify(existingDevices) } }),
-            });
-
-            showMessage("Device verified successfully!", "success");
-            sendLoginNotification(userName, userEmail);
-        } catch (err) {
-            showMessage("Device verified locally, but failed to update database.", "error");
-            console.error("SheetDB Update Error:", err);
-        }
-
-    } else {
-        showMessage("Invalid OTP. Try again.", "error");
-    }
-}
-
-// ---------------- FUNCTION: SEND LOGIN NOTIFICATION ----------------
-function sendLoginNotification(userName, userEmail) {
-    try {
-        const ua = navigator.userAgent;
-        let device = "Unknown Device";
-        if (/Windows/i.test(ua)) device = "Windows PC";
-        else if (/Mac/i.test(ua)) device = "Mac";
-        else if (/Android/i.test(ua)) device = "Android Phone";
-        else if (/iPhone/i.test(ua)) device = "iPhone";
-        else if (/iPad/i.test(ua)) device = "iPad";
-
-        let browser = "Unknown Browser";
-        if (/Chrome/i.test(ua)) browser = "Chrome";
-        else if (/Safari/i.test(ua) && !/Chrome/i.test(ua)) browser = "Safari";
-        else if (/Firefox/i.test(ua)) browser = "Firefox";
-        else if (/Edge/i.test(ua)) browser = "Edge";
-
-        const time = new Date().toLocaleString("en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit",
-            timeZoneName: "short"
-        });
-
-        const deviceInfo = `${browser} on ${device}`;
-
-        emailjs.send("service_5fwha32", "template_jkktmer", {
-            user_name: userName,
-            email: userEmail,
-            device: deviceInfo,
-            time: time
-        })
-        .then(() => {
-            showMessage("Login verified mail sent!", "success");
-            setTimeout(() => {
-                window.location.href = "./global-feed.html";
-            }, 2000);
-        })
-        .catch((err) => {
-            showMessage("Login complete, but email could not be sent.", "error");
-            console.error("EmailJS Error:", err);
-        });
-
-    } catch (err) {
-        console.error("Error sending login notification:", err);
-        showMessage("Login complete, but some info could not be fetched.", "error");
-    }
-}
-
-// ---------------- FUNCTION: START RESEND COOLDOWN ----------------
+// --- START RESEND COOLDOWN ---
 function startResendCooldown() {
+    if (!resendBtn || !timerBox || !countdownSpan) return;
+
     resendBtn.disabled = true;
     timerBox.style.display = "block";
 
     let timeLeft = 60;
     countdownSpan.textContent = timeLeft;
 
+    clearInterval(cooldownInterval);
     cooldownInterval = setInterval(() => {
         timeLeft--;
         countdownSpan.textContent = timeLeft;
@@ -217,58 +29,42 @@ function startResendCooldown() {
     }, 1000);
 }
 
-// ---------------- FUNCTION: SHOW MESSAGE ----------------
-function showMessage(msg, type) {
-    messageBox.innerHTML = msg;
-    messageBox.style.color = type === "success" ? "green" : "red";
-    messageBox.style.display = "block";
+// --- ATTEMPTS TRACKING ---
+function getAttempts() {
+    let attempts = JSON.parse(localStorage.getItem("loginOtpResendAttempts")) || [];
+    const now = Date.now();
+
+    // filter out expired attempts (older than 10 mins)
+    attempts = attempts.filter(ts => now - ts < WINDOW_MS);
+    localStorage.setItem("loginOtpResendAttempts", JSON.stringify(attempts));
+    return attempts;
 }
 
-// ---------------- EVENT LISTENERS ----------------
-verifyBtn.addEventListener("click", verifyOtp);
-resendBtn.addEventListener("click", () => {
-    let userName = localStorage.getItem("userName");
-    let userEmail = localStorage.getItem("userEmail");
-    
-    if ((!userName || !userEmail) && sessionStorage.getItem("pendingAuthUser")) {
-        const pending = JSON.parse(sessionStorage.getItem("pendingAuthUser"));
-        userEmail = pending.email;
-        userName = pending.userName || "";
-        localStorage.setItem("userEmail", userEmail);
-        localStorage.setItem("userName", userName);
-    }
+function addAttempt() {
+    const attempts = getAttempts();
+    attempts.push(Date.now());
+    localStorage.setItem("loginOtpResendAttempts", JSON.stringify(attempts));
+    return attempts;
+}
 
-    if (userName && userEmail) sendOtp(userName, userEmail);
-    else showMessage("Missing user info. Cannot resend OTP.", "error");
+// --- PAGE LOAD: AUTO START COUNTDOWN ---
+window.addEventListener("load", () => {
+    startResendCooldown();
 });
 
-// ---------------- AUTO SEND OTP ON PAGE LOAD ----------------
-window.addEventListener("load", async () => {
-    let userName = localStorage.getItem("userName");
-    let userEmail = localStorage.getItem("userEmail");
+// --- RESEND OTP CLICK ---
+if (resendBtn) {
+    resendBtn.addEventListener("click", () => {
+        const attempts = getAttempts();
 
-    if ((!userName || !userEmail) && sessionStorage.getItem("pendingAuthUser")) {
-        const pending = JSON.parse(sessionStorage.getItem("pendingAuthUser"));
-        userEmail = pending.email;
-        userName = pending.userName || "";
-        localStorage.setItem("userEmail", userEmail);
-        localStorage.setItem("userName", userName);
-    }
-
-    if (userName && userEmail) {
-        const user = await getUserFromSheet(userEmail);
-        if (user) {
-            sendOtp(userName, userEmail);
-        } else {
-            showMessage(
-                `User not found. Please <a href="./sign-up.html" style="color: blue; text-decoration: underline;">go back to signup</a>.`,
-                "error"
-            );
+        if (attempts.length >= MAX_ATTEMPTS) {
+            alert("You’ve reached the maximum OTP resend limit (3 times in 10 mins). Please wait.");
             resendBtn.disabled = true;
-            localStorage.removeItem("userName");
-            localStorage.removeItem("userEmail");
+            return;
         }
-    } else {
-        showMessage("Missing user data. Please go back and sign up again.", "error");
-    }
-});
+
+        addAttempt();
+        alert("OTP resent");
+        startResendCooldown();
+    });
+}

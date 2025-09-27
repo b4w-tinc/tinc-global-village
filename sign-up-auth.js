@@ -1,125 +1,21 @@
-(function () {
-    emailjs.init("n2ck3LYOGt_XTSnvy")
-})();
+// ---------------- ELEMENTS ----------------
+const resendBtn = document.getElementById("sendOtpBtn");
+const timerBox = document.getElementById("timerDisplay");
+const countdownSpan = document.getElementById("countdown");
 
-// ---------------- GET HTML ELEMENTS ----------------
-const otpInput = document.getElementById("otpCode");       // OTP input field
-const verifyBtn = document.getElementById("verifyOtpBtn");     // Verify button
-const resendBtn = document.getElementById("sendOtpBtn");     // Resend OTP button
-const messageBox = document.getElementById("messageBox");   // For showing success/error messages
-const timerBox = document.getElementById("timerDisplay");       // Box holding the countdown message
-const countdownSpan = document.getElementById("countdown"); // Countdown number display
-
-// ---------------- VARIABLES ----------------
-let generatedOtp;
-let otpExpiry;
 let cooldownInterval;
-
-// ---------------- SHEETDB URL ----------------
-const SHEETDB_URL = "https://sheetdb.io/api/v1/tsa10q47pdryu"; 
-
-// ---------------- FUNCTION: CHECK USER IN SHEETDB ----------------
-async function userExistsInSheet(email) {
-    try {
-        const res = await fetch(`${SHEETDB_URL}/search?Email=${encodeURIComponent(email)}`, {
-            method: "GET",
-        });
-        const data = await res.json();
-        return data.length > 0;
-    } catch (err) {
-        console.error("Error checking user in SheetDB:", err);
-        return false;
-    }
-}
-
-// ---------------- FUNCTION: SEND OTP ----------------
-function sendOtp(userName, userEmail) {
-    generatedOtp = Math.floor(100000 + Math.random() * 900000); // 6-digit OTP
-    otpExpiry = Date.now() + 15 * 60 * 1000; // OTP expires in 15 minutes
-
-    emailjs.send("service_swosezx", "template_z8kpmhg", {
-        user_name: userName,
-        passcode: generatedOtp,
-        email: userEmail
-    })
-    .then(() => {
-        showMessage(`OTP sent to ${userEmail}`, "success");
-        startResendCooldown(); // Start 60s cooldown
-    })
-    .catch((error) => {
-        showMessage("Failed to send OTP. Try again.", "error");
-        console.error("EmailJS Error:", error);
-    });
-}
-
-// ---------------- FUNCTION: VERIFY OTP ----------------
-function verifyOtp(e) {
-    e.preventDefault();   // ✅ Prevent form reload
-
-    const enteredOtp = otpInput.value.trim();
-    const userEmail = localStorage.getItem("userEmail");
-
-    if (!enteredOtp) {
-        showMessage("Please enter the OTP.", "error");
-        return;
-    }
-
-    if (Date.now() > otpExpiry) {
-        showMessage("OTP expired. Request a new one.", "error");
-        return;
-    }
-
-    if (enteredOtp == generatedOtp) {
-        // Update user in SheetDB: set Verified = true
-        fetch(`${SHEETDB_URL}/Email/${encodeURIComponent(userEmail)}`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ data: { Verified: "true" } }),
-        })
-        .then(res => res.json())
-        .then(() => {
-            showMessage("OTP verified successfully!", "success");
-            sendWelcomeEmail();
-        })
-        .catch((err) => {
-            showMessage("Verification succeeded locally, but failed to update database.", "error");
-            console.error("SheetDB Update Error:", err);
-        });
-    } else {
-        showMessage("Invalid OTP. Try again.", "error");
-    }
-}
-
-// ---------------- FUNCTION: SEND WELCOME MAIL ----------------
-function sendWelcomeEmail() {
-    const userName = localStorage.getItem("userName");
-    const userEmail = localStorage.getItem("userEmail");
-
-    emailjs.send("service_swosezx", "template_rjxjl4s", {
-        user_name: userName,
-        email: userEmail
-    })
-    .then(() => {
-        showMessage("Welcome mail sent! Signup complete.", "success");
-        // Redirect user after success
-        setTimeout(() => {
-            window.location.href = "./villages-flashcard.html";
-        }, 2000);
-    })
-    .catch((error) => {
-        showMessage("Signup complete, but failed to send welcome mail.", "error");
-        console.error("EmailJS Error:", error);
-    });
-}
+const MAX_ATTEMPTS = 3;
+const WINDOW_MS = 10 * 60 * 1000; // 10 minutes in ms
 
 // ---------------- FUNCTION: START RESEND COOLDOWN ----------------
 function startResendCooldown() {
     resendBtn.disabled = true;
-    timerBox.style.display = "block"; // Show countdown message
+    timerBox.style.display = "block";
 
-    let timeLeft = 60; // 60s cooldown
+    let timeLeft = 60;
     countdownSpan.textContent = timeLeft;
 
+    clearInterval(cooldownInterval); // reset old countdown
     cooldownInterval = setInterval(() => {
         timeLeft--;
         countdownSpan.textContent = timeLeft;
@@ -127,45 +23,45 @@ function startResendCooldown() {
         if (timeLeft <= 0) {
             clearInterval(cooldownInterval);
             resendBtn.disabled = false;
-            timerBox.style.display = "none"; // Hide message
+            timerBox.style.display = "none";
         }
     }, 1000);
 }
 
-// ---------------- FUNCTION: SHOW MESSAGE ----------------
-function showMessage(msg, type) {
-    messageBox.innerHTML = msg;  // ✅ Allow clickable HTML
-    messageBox.style.color = type === "success" ? "green" : "red";
-    messageBox.style.display = "block";
+// ---------------- FUNCTION: TRACK ATTEMPTS ----------------
+function getAttempts() {
+    let attempts = JSON.parse(localStorage.getItem("otpResendAttempts")) || [];
+    const now = Date.now();
+
+    // filter out attempts older than 10 minutes
+    attempts = attempts.filter(ts => now - ts < WINDOW_MS);
+    localStorage.setItem("otpResendAttempts", JSON.stringify(attempts));
+    return attempts;
 }
 
-// ---------------- EVENT LISTENERS ----------------
-verifyBtn.addEventListener("click", verifyOtp);
+function addAttempt() {
+    const attempts = getAttempts();
+    attempts.push(Date.now());
+    localStorage.setItem("otpResendAttempts", JSON.stringify(attempts));
+    return attempts;
+}
+
+// ---------------- RESEND OTP HANDLER ----------------
 resendBtn.addEventListener("click", () => {
-    const userName = localStorage.getItem("userName");
-    const userEmail = localStorage.getItem("userEmail");
-    sendOtp(userName, userEmail);
+    const attempts = getAttempts();
+
+    if (attempts.length >= MAX_ATTEMPTS) {
+        alert("You’ve reached the maximum OTP resend limit (3 times in 10 mins). Please wait.");
+        resendBtn.disabled = true;
+        return;
+    }
+
+    addAttempt();
+    alert("OTP resent");
+    startResendCooldown(); // restart cooldown
 });
 
-// ---------------- AUTO SEND OTP ON PAGE LOAD ----------------
-window.addEventListener("load", async () => {
-    const userName = localStorage.getItem("userName");
-    const userEmail = localStorage.getItem("userEmail");
-
-    if (userName && userEmail) {
-        const exists = await userExistsInSheet(userEmail);
-        if (exists) {
-            sendOtp(userName, userEmail); // Auto send OTP when page loads
-        } else {
-            showMessage(
-                `User not found in database. Please <a href="./sign-up.html" style="color: blue; text-decoration: underline;">go back to signup</a>.`,
-                "error"
-            );
-            resendBtn.disabled = true;
-            localStorage.removeItem("userName");
-            localStorage.removeItem("userEmail");
-        }
-    } else {
-        showMessage("Missing user data. Please go back and sign up again.", "error");
-    }
+// ---------------- INIT ----------------
+window.addEventListener("load", () => {
+    startResendCooldown();
 });
