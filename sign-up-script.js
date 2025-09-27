@@ -53,24 +53,16 @@ if (showPassword && signupPassword && confirmPassword) {
     });
 }
 
-// ---------------- FIX: RESET LOADER ON HISTORY NAVIGATION ----------------
-(function loaderNavFix() {
-    function ensureHidden(reason) {
-        if (!loaderOverlay) return;
+// ---------------- FIX: LOADER FAILSAFE ----------------
+window.addEventListener("pageshow", () => {
+    if (loaderOverlay) {
+        // hide immediately on back nav
         loaderOverlay.classList.remove("active");
-        console.debug("signup.js: hid loader (reason:", reason, ")");
+
+        // ⏳ failsafe: if still stuck, kill it after 10s
+        setTimeout(() => {
+            loaderOverlay.classList.remove("active");
+            console.debug("Failsafe: loader forcibly hidden after 10s");
+        }, 10000);
     }
-
-    document.addEventListener("DOMContentLoaded", () => ensureHidden("DOMContentLoaded"));
-
-    window.addEventListener("pageshow", (event) => {
-        ensureHidden("pageshow");
-        setTimeout(() => ensureHidden("pageshow-delayed"), 50);
-        // If you prefer a hard reload on cached restore:
-        // if (event.persisted) window.location.reload();
-    });
-
-    window.addEventListener("popstate", () => ensureHidden("popstate"));
-
-    setTimeout(() => ensureHidden("fallback-250ms"), 250);
-})();
+});
