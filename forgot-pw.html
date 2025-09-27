@@ -5,17 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password</title>
-    <link rel="stylesheet" href="./log-in-style.css">
+    <link rel="stylesheet" href="./forgot-pw.css">
 </head>
 
 <body>
-
-    <div id="loaderOverlay">
-        <div class="center">
-            <div class="ring"></div>
-            <span>Loading...</span>
-        </div>
-    </div>
 
     <div class="top">
         <div class="logo">
@@ -28,40 +21,43 @@
             <p> Pls enter the OTP to verify your device</p>
         </header>
 
-        <form id="logIn">
-            <label for="loginEmail">
+        <form id="resetPw">
+            <label for="Email">
                 <h3>Email</h3>
             </label>
-            <input type="email" class="form-span" name="Full Name" id="loginEmail" placeholder="Enter the mail you used to signup"
-                required>
+            <input type="email" class="form-span" name="Email" id="Email" placeholder="Enter the mail you used to signup" required>
             <br><br>
-            <label for="logiPassword">
-                <h3>Password</h3>
+            <label for="Otp">
+                <h3>OTP</h3>
             </label>
-            <input type="password" class="form-span" name="Password" id="loginPassword"
-                placeholder="Enter your Password" required>
+            <div class="otp">
+                    <input type="text" name="OTP" id="otpCode" maxlength="6" placeholder="Enter OTP" required>
+                    <button type="submit" class="submit-otp" id="verifyOtpBtn" disabled>Verify OTP</button>
+            </div>
+            <br>
+            <p style="margin-left: 20px;">Didn't receive mail? Click button below to request for OTP</p>
+            <button id="resendOtpBtn" class="re-send" id="sendOtpBtn" disabled>Re-send OTP</button>
+            <p id="timerDisplay" style="font-size: 0.9em; color:gray; display: none;">
+                You can request a new OTP in <span id="countdown">60</span> seconds
+            </p>
+            <br>
+            <label for="newPw">
+                <h3>Enter New Password</h3>
+            </label>
+            <input type="password" class="form-span" name="New Passwprd" id="newPw" placeholder="Enter your New Password" pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#_.*])[A-Za-z\d@$!%*?&#_.*]{8,}$" title="Password must be at least 8 characters and include: 1 uppercase, 1 lowercase, 1 number and 1 special character">
             <br><br>
             <input type="checkbox" name="check-password" id="checkPassword" style="cursor: pointer;">
             <label for="checkPassword" id="toggleLabel">Show Password</label>
             <br><br>
-            <input type="checkbox" name="agreement" id="agreement" required style="cursor: pointer;">
-            <label for="agreement" id="agreement" class="agreement">I agree to the <a href="./terms-of-service.txt"
-                    target="_blank" rel="noopener norefferrer">Terms of Service</a> and <a href="./privacy-policy.txt"
-                    target="_blank" rel="noopener norefferrer">Privacy Policy</a></label>
-            <br><br>
-            <div class="forgot-pw">
-                <a href="./forgot-pw.html">
-                    <p>Forgot Password</p>
-                </a>
-            </div>
-            <br><br>
-            <div class="form-btn">
-                <button type="submit" class="submit"> Log In </button>
-            </div>
+            <label for="confirmPw">
+                <h3>Confirm Password</h3>
+            </label>
+            <input type="password" class="form-span" name="Confirm Password" id="confirmPw" placeholder="Confirm your Password">
+                <br><br>
+                <div class="form-btn">
+                    <button type="submit" class="submit"> Save Changes </button>
+                </div>
         </form>
-        <div class="sign-up-redirect">
-            <p>Don't have an account? <a href="./sign-up.html">Sign Up</a></p>
-        </div>
     </div>
 
     <footer>
@@ -79,7 +75,6 @@
             </div>
         </ul>
     </footer>
-    <script src="./log-in-script.js"></script>
+    <script src="./forget-pw.js"></script>
 </body>
-
 </html>

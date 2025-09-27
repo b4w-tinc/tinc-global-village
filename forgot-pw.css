@@ -1,0 +1,183 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #2EB5E5, #F26C2B);
+}
+
+#loaderOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    pointer-events: none;
+    /* only blocks clicks when active */
+    opacity: 0;
+    transition: opacity 0.4s ease-in-out;
+}
+
+#loaderOverlay.active {
+    pointer-events: all;
+    opacity: 1;
+}
+
+.top {
+    height: 100%;
+    border: 2px light linear-gradient(135deg, #2EB5E5, #FFFFFF);
+    background: linear-gradient(135deg, #2EB5E5, #FFFFFF);
+    width: 40%;
+    margin-top: 50px;
+    margin-bottom: 50px;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.logo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.logo h3 {
+    background: linear-gradient(135deg, #F36C21, #00AEEF);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 18px;
+}
+
+header {
+    text-align: center;
+    margin: 30px 0;
+}
+
+header h2 {
+    padding-bottom: 10px;
+}
+
+form {
+    margin: 40px;
+}
+
+form h3 {
+    margin-bottom: 10px;
+}
+
+.form-span {
+    width: 90%;
+}
+
+.re-send {
+    border: 2px solid #f2f2f2;
+    background: #f2f2f2;
+    padding: 3px 10px;
+    cursor: pointer;
+    margin: 20px;
+    transition: background 0.3s ease;
+}
+
+.re-send:hover {
+    border: 2px solid #2EB5E5;
+    background: #2EB5E5;
+}
+
+#timerDisplay {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.form-btn {
+    display: flex;
+    justify-content: center;
+}
+
+.submit {
+    border: 5px solid #2EB5E5;
+    background: #2EB5E5;
+    padding: 5px 10px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.submit:hover {
+    border: 5px solid #F2F2F2;
+    background: #f2f2f2;
+}
+
+footer ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+footer li {
+    list-style-type: none;
+    padding-left: 10px;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #000;
+}
+
+footer img {
+    width: 50px;
+    height: 50px;
+}
+
+.ul-1 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-bottom: 40px;
+}
+
+.ul-2 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-bottom: 40px;
+}
+
+@media (max-width: 600px) {
+
+    .top {
+        width: 100%;
+    }
+
+}
+
+@media (min-width:601px) and (max-width:900px) {
+    .top {
+        width: 60%;
+    }
+
+    .agreement {
+        font-size: 15px;
+    }
+}
