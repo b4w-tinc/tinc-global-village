@@ -49,4 +49,9 @@ showPassword.addEventListener("change", function () {
 window.addEventListener("pageshow", (event) => {
     const loader = document.getElementById("loaderOverlay");
     if (loader) loader.classList.remove("active");
+
+    // Optional: force reload if page was cached
+    if (event.persisted) {
+        window.location.reload();
+    }
 });
