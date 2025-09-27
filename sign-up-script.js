@@ -2,11 +2,17 @@
 const loaderOverlay = document.getElementById("loaderOverlay");
 
 function showLoader() {
-    if (loaderOverlay) loaderOverlay.classList.add("active");
+    if (loaderOverlay) {
+        loaderOverlay.style.display = "flex"; // ensure visible
+        loaderOverlay.classList.add("active");
+    }
 }
 
-function hideLoader() {
-    if (loaderOverlay) loaderOverlay.classList.remove("active");
+function hideLoader(force = false) {
+    if (loaderOverlay) {
+        loaderOverlay.classList.remove("active");
+        if (force) loaderOverlay.style.display = "none"; // 🔥 hard reset
+    }
 }
 
 // ------- FORM ELEMENTS -------------
@@ -25,16 +31,15 @@ if (form) {
         const pass = signupPassword.value.trim();
         const confirmPass = confirmPassword.value.trim();
 
-        // Password match validation
         if (pass !== confirmPass) {
             alert("Passwords do not match!");
-            hideLoader();
+            hideLoader(true); // force reset if validation fails
             return;
         }
 
         // Simulate signup success
         setTimeout(() => {
-            hideLoader();
+            hideLoader(true); // force hide before navigating
             alert("Signup successful! Please verify your Email.");
             window.location.href = "./sign-up-auth.html";
         }, 1500);
@@ -54,15 +59,22 @@ if (showPassword && signupPassword && confirmPassword) {
 }
 
 // ---------------- FIX: LOADER FAILSAFE ----------------
-window.addEventListener("pageshow", () => {
-    if (loaderOverlay) {
-        // hide immediately on back nav
+(function loaderNavFix() {
+    function resetLoader(reason) {
+        if (!loaderOverlay) return;
         loaderOverlay.classList.remove("active");
-
-        // ⏳ failsafe: if still stuck, kill it after 10s
-        setTimeout(() => {
-            loaderOverlay.classList.remove("active");
-            console.debug("Failsafe: loader forcibly hidden after 10s");
-        }, 10000);
+        loaderOverlay.style.display = "none"; // 🔥 force hide
+        console.debug("Loader reset (" + reason + ")");
     }
-});
+
+    document.addEventListener("DOMContentLoaded", () => resetLoader("DOMContentLoaded"));
+    window.addEventListener("pageshow", () => {
+        resetLoader("pageshow");
+        setTimeout(() => resetLoader("pageshow-delayed"), 50);
+    });
+    window.addEventListener("popstate", () => resetLoader("popstate"));
+
+    // safety nets
+    setTimeout(() => resetLoader("failsafe-250ms"), 250);
+    setTimeout(() => resetLoader("failsafe-10s"), 10000);
+})();
