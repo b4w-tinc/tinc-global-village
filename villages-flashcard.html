@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join A Village</title>
+    <link rel="stylesheet" href="./vilages-flashcard.css">
+</head>
+<body>
+    <div class="logo">
+        <img src="./tinc logo.jpg" alt="Logo">
+        <h3>B4W.TINC</h3>
+    </div>
+    <header>
+        <h1>Villages Onboarding Session</h1>
+        <p>Please complete the steps below to finalize your onboarding process</p>
+    </header>
+        <form id="villageForm">
+            <h3>1. I want to join as a:</h3>
+            <div class="radio-container">
+                <div class="radio-btn">
+                    <p>&#x2731; Pls select one of these options below</p>
+                    <br>
+                <div class="radio-1">
+                    <input type="radio" class="radio" name="opportunity" id="opportunityProvider" value="Opportunity Provider">
+                    <label for="opportunityProvider">Oppurtunity Provider</label>
+                        </div>
+                <div class="radio-2">
+                    <input type="radio" class="radio" name="opportunity" id="opportunitySeeker" value="Oppurtunity Seeker">
+                    <label for="opportunitySeeker">Opportunity Seeker</label>
+                        </div>
+                        <button type="button" class="form-btn" disabled>Save</button>
+                </div>
+            </div>
+                </form>
+
+                <!--Oppotunity Provider-->
+        <form class="opportunity-provider" id="Provider">
+            <h3>2. Opportunity Provider</h3>
+            <div class="provider-container">
+                <h2>Pls select one or more village from the listed options below</h2>
+                <fieldset id="providerFieldset" disabled>
+
+                    <ul>
+                        <input type="checkbox" name="option" id="mentorshipVillage" value="Mentorship Village" style="cursor: pointer;">
+                        <label for="mentorshipVillage">
+                            <li class="provider-card">
+                                <h3>Mentorship Village</h3>
+                                <p>(Fully functional soon, but you can join now!)</p>
+                                <p>As an Opportunity Provider, gain access to a global feed, host mentorship classes and webinars directly on the
+                                    platform, and even record your sessions for later use.</p>
+                                <p><strong>Pro Tip:</strong> Ideal for CEOs and industry experts.</p>
+
+                            </li>
+                        </label>
+                        <input type="checkbox" name="option" id="jobVillage" value="Job Village" style="cursor: pointer;">
+                        <label for="jobVillage">
+                        <li class="provider-card">
+                            <h3>Job/Internships Village</h3>
+                            <p>As an Opportunity Provider, gain access to a global feed and the ability to post job opportunities, internship
+                                placements, and volunteer openings on our job board.</p>
+                            <p><strong>Pro Tip:</strong> Perfect for CEOs and Recruitment Officers.</p>
+
+                        </li>
+                        </label>
+                        <input type="checkbox" name="option" id="fundingVillage" value="Funding Village" style="cursor: pointer;">
+                        <label for="fundingVillage">
+                        <li class="provider-card">
+                            <h3>Startup Funding Village</h3>
+                            <p>As an Opportunity Provider, you gain exclusive access to connect with startup founders and invest in projects that
+                                align with your interests.</p>
+                            <p><strong>Pro Tip:</strong> Ideal for individuals passionate about funding and driven by innovation.</p>
+
+                        </li>
+                        </label>
+                    </ul>
+                    <button type="button" class="provider-btn">Join Selected Villages</button>
+                </fieldset>
+            </div>  
+        </form>
+
+        <!--Opportunity Seeker-->
+        <form class="opportunity-seeker" id="Seeker">
+            <h3>3. Opportunity Seeker</h3>
+            <div class="provider-container">
+                <h2>Pls select one or more village from the listed options below</h2>
+                <fieldset id="providerFieldset" disabled>
+        
+                    <ul>
+                        <input type="checkbox" name="option" id="mentorshipVillage" value="Mentorship Village" style="cursor: pointer;">
+                        <label for="mentorshipVillage">
+                            <li class="provider-card">
+                                <h3>Mentorship Village</h3>
+                                <p>(Fully functional soon but you can join now)</p>
+                                <p>As an Opportunity Seeker, access a global feed, attend mentorship classes and webinars, and gain valuable knowledge
+                                    from industry leaders.</p>
+                                <p><strong>Pro Tip:</strong> Perfect for learners, aspiring professionals, and those looking to level up their skills.
+                                </p>
+
+                            </li>
+                        </label>
+                        <input type="checkbox" name="option" id="jobVillage" value="Job Village" style="cursor: pointer;">
+                        <label for="jobVillage">
+                            <li class="provider-card">
+                                <h3>Job/Internships Village</h3>
+                                <p>As an Opportunity Seeker, explore a global feed of job openings, internship placements, and volunteer opportunities
+                                    to advance your career.</p>
+                                <p><strong>Pro Tip:</strong> Ideal for ambitious professionals, students, and career changers.</p>
+
+                            </li>
+                        </label>
+                        <input type="checkbox" name="option" id="fundingVillage" value="Funding Village" style="cursor: pointer;">
+                        <label for="fundingVillage">
+                            <li class="provider-card">
+                                <h3>Startup Funding Village</h3>
+                                <p>As an Opportunity Seeker, connect with innovative startups and explore projects that match your skills and interests.
+                                </p>
+                                <p><strong>Pro Tip:</strong> Perfect for those eager to learn, collaborate, and grow in the world of innovation.</p>
+
+                            </li>
+                        </label>
+                    </ul>
+                    <button type="button" class="seeker-btn">Join Selected Villages</button>
+                </fieldset>
+            </div>
+        </form>
+
+        <footer>
+            <ul>
+                <div class="ul-1">
+                    <li><a href="./">Legal</a></li>
+                    <li><a href="./">Support</a></li>
+                </div>
+                <div class="ul-2">
+                    <li><a href="https://www.instagram.com/b4w.tinc?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                            target="_blank" rel="norefferrer noopener"><img
+                                src="./instagram-logo-facebook-2-svgrepo-com (1).svg" alt=""></a></li>
+                    <li><a href="./"><img src="./linkedin-logo-svgrepo-com.svg" alt=""></a></li>
+                    <li><a href="./"><img src="./twitter-logo-thin-svgrepo-com.svg" alt=""></a></li>
+                </div>
+            </ul>
+        </footer>
+        <script src="./villages-flashcard.js"></script>
+</body>
+</html>
