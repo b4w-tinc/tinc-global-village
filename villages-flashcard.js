@@ -1,88 +1,95 @@
-// --- CONSTANTS / ELEMENTS ---
-const radioButtons = document.querySelectorAll('input[name="opportunity"]');
-const saveBtn = document.querySelector('.form-btn');
-
-const providerSection = document.getElementById('Provider');
-const seekerSection = document.getElementById('Seeker');
-
-const providerFieldset = providerSection.querySelector('fieldset');
-const seekerFieldset = seekerSection.querySelector('fieldset');
-
-const providerCards = providerSection.querySelectorAll('.provider-card');
-const providerCheckboxes = providerSection.querySelectorAll('input[type="checkbox"]');
-const providerJoinBtn = providerSection.querySelector('.provider-btn');
-
-const seekerCards = seekerSection.querySelectorAll('.provider-card');
-const seekerCheckboxes = seekerSection.querySelectorAll('input[type="checkbox"]');
-const seekerJoinBtn = seekerSection.querySelector('.seeker-btn');
+// --- ELEMENTS ---
+const form = document.getElementById("resetPw");
+const otpInput = document.getElementById("otpCode");
+const verifyBtn = document.getElementById("verifyOtpBtn");
+const resendBtn = document.getElementById("resendOtp");
+const countdownSpan = document.getElementById("countdown");
+const timerDisplay = document.getElementById("timerDisplay");
+const newPassword = document.getElementById("newPw");
+const confirmPassword = document.getElementById("confirmPw");
+const saveBtn = form.querySelector('.submit'); // Save Changes button
+const showPassword = document.getElementById("checkPassword");
+const toggleLabel = document.getElementById("toggleLabel");
 
 // --- INITIAL STATE ---
+verifyBtn.disabled = true;
 saveBtn.disabled = true;
-providerSection.style.display = 'none';
-seekerSection.style.display = 'none';
-providerFieldset.disabled = true;
-seekerFieldset.disabled = true;
-providerJoinBtn.disabled = true;
-seekerJoinBtn.disabled = true;
+otpInput.value = "";
 
-// --- STEP 1: Radio selection enables Save ---
-radioButtons.forEach(radio => {
-    radio.addEventListener('change', () => {
-        saveBtn.disabled = false;
+// --- SHOW/HIDE PASSWORD ---
+if (showPassword && newPassword && confirmPassword) {
+    showPassword.addEventListener("change", () => {
+        const type = showPassword.checked ? "text" : "password";
+        newPassword.type = type;
+        confirmPassword.type = type;
+        toggleLabel.textContent = showPassword.checked ? "Hide Password" : "Show Password";
     });
+}
+
+// --- ENABLE VERIFY BUTTON WHEN OTP IS 6 CHARACTERS ---
+otpInput.addEventListener("input", () => {
+    verifyBtn.disabled = otpInput.value.length !== 6;
 });
 
-// --- STEP 2: Save button activates section based on selection ---
-saveBtn.addEventListener('click', () => {
-    const selectedRadio = document.querySelector('input[name="opportunity"]:checked');
-    if (!selectedRadio) return;
+// --- VERIFY OTP BUTTON CLICK ---
+verifyBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    alert("OTP validated");
+    saveBtn.disabled = false; // Enable Save Changes after OTP is validated
+});
 
-    if (selectedRadio.value === "Opportunity Provider") {
-        providerSection.style.display = 'block';
-        seekerSection.style.display = 'none';
-        providerFieldset.disabled = false;
-        seekerFieldset.disabled = true;
-        updateJoinBtnState(providerCheckboxes, providerJoinBtn);
-    } else if (selectedRadio.value === "Oppurtunity Seeker") {
-        providerSection.style.display = 'none';
-        seekerSection.style.display = 'block';
-        providerFieldset.disabled = true;
-        seekerFieldset.disabled = false;
-        updateJoinBtnState(seekerCheckboxes, seekerJoinBtn);
+// --- SAVE CHANGES BUTTON ---
+saveBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const pass = newPassword.value.trim();
+    const confirmPass = confirmPassword.value.trim();
+
+    if (!pass || !confirmPass) {
+        alert("Please fill in all password fields");
+        return;
     }
+
+    if (pass !== confirmPass) {
+        alert("Passwords do not match!");
+        return;
+    }
+
+    alert("Password reset successfully!");
+    window.location.href = "./log-in.html"; // Redirect to login page
 });
 
-// --- STEP 3: Card click toggles checkbox and selected class ---
-function setupCards(cards, checkboxes, fieldset, joinBtn) {
-    cards.forEach((card, index) => {
-        card.addEventListener('click', () => {
-            if (fieldset.disabled) return;
-            checkboxes[index].checked = !checkboxes[index].checked;
-            card.classList.toggle('selected', checkboxes[index].checked);
-            updateJoinBtnState(checkboxes, joinBtn);
-        });
+// --- RESEND OTP BUTTON & COUNTDOWN ---
+let resendCount = 0;
+let cooldown = 60; // seconds
+let cooldownInterval;
 
-        checkboxes[index].addEventListener('change', () => {
-            card.classList.toggle('selected', checkboxes[index].checked);
-            updateJoinBtnState(checkboxes, joinBtn);
-        });
-    });
+function startCooldown() {
+    resendBtn.disabled = true;
+    timerDisplay.style.display = "block";
+    let timeLeft = cooldown;
+    countdownSpan.textContent = timeLeft;
+
+    cooldownInterval = setInterval(() => {
+        timeLeft--;
+        countdownSpan.textContent = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(cooldownInterval);
+            if (resendCount < 3) resendBtn.disabled = false;
+            timerDisplay.style.display = "none";
+        }
+    }, 1000);
 }
 
-// --- STEP 4: Enable Join button if at least one checkbox selected ---
-function updateJoinBtnState(checkboxes, joinBtn) {
-    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-    joinBtn.disabled = !anyChecked;
-}
+// Start countdown immediately
+startCooldown();
 
-// Setup card selection
-setupCards(providerCards, providerCheckboxes, providerFieldset, providerJoinBtn);
-setupCards(seekerCards, seekerCheckboxes, seekerFieldset, seekerJoinBtn);
+// Resend OTP click
+resendBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (resendCount >= 3) return;
 
-// --- STEP 5: Join Selected Villages buttons redirect ---
-providerJoinBtn.addEventListener('click', () => {
-    if (!providerJoinBtn.disabled) window.location.href = './global-feed.html';
-});
-seekerJoinBtn.addEventListener('click', () => {
-    if (!seekerJoinBtn.disabled) window.location.href = './global-feed.html';
+    alert("OTP resent!");
+    resendCount++;
+    startCooldown();
 });

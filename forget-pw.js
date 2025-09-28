@@ -10,16 +10,45 @@ const verifyOtpBtn = document.getElementById("verifyOtpBtn");
 const resendOtpBtn = document.getElementById("resendOtpBtn");
 const timerDisplay = document.getElementById("timerDisplay");
 const countdownSpan = document.getElementById("countdown");
+const saveBtn = form.querySelector('button[type="submit"]'); // Save Changes button
 
 // ---------- RESEND OTP STATE ----------
 let countdownTimer;
 let resendCount = 0;
 let firstResendTime = null;
+let otpVerified = false;
+
+// ---------- INITIAL STATE ----------
+password.disabled = true;
+confirmPassword.disabled = true;
+saveBtn.disabled = true;
 
 // ---------- ENABLE VERIFY OTP WHEN 6 CHARACTERS ----------
 otpCode.addEventListener("input", () => {
     verifyOtpBtn.disabled = otpCode.value.trim().length !== 6;
 });
+
+// ---------- VERIFY OTP BUTTON ----------
+verifyOtpBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    if (otpCode.value.trim().length === 6) {
+        alert("✅ OTP verified!");
+        otpVerified = true;
+        password.disabled = false;
+        confirmPassword.disabled = false;
+        saveBtn.disabled = true; // still disabled until passwords are filled
+    } else {
+        alert("❌ Please enter a 6-digit OTP first.");
+    }
+});
+
+// ---------- WATCH PASSWORD FIELDS TO ENABLE SAVE BUTTON ----------
+function checkPasswordsFilled() {
+    saveBtn.disabled = !(password.value.trim() && confirmPassword.value.trim());
+}
+
+password.addEventListener("input", checkPasswordsFilled);
+confirmPassword.addEventListener("input", checkPasswordsFilled);
 
 // ---------- START COUNTDOWN ----------
 function startCountdown() {
@@ -46,11 +75,8 @@ resendOtpBtn.addEventListener("click", (e) => {
 
     const now = Date.now();
 
-    if (!firstResendTime) {
-        firstResendTime = now;
-    }
+    if (!firstResendTime) firstResendTime = now;
 
-    // Reset counter if more than 10 minutes passed
     if (now - firstResendTime > 10 * 60 * 1000) {
         resendCount = 0;
         firstResendTime = now;
@@ -63,21 +89,20 @@ resendOtpBtn.addEventListener("click", (e) => {
 
     resendCount++;
     alert("✅ A new OTP has been sent to your email!");
-
     startCountdown();
 });
 
-// ---------- PASSWORD MATCH VALIDATION ----------
+// ---------- PASSWORD MATCH VALIDATION (SAVE CHANGES) ----------
 form.addEventListener("submit", (e) => {
     e.preventDefault();
 
-    if (password.value.trim() !== confirmPassword.value.trim()) {
-        alert("❌ Passwords do not match!");
+    if (!otpVerified) {
+        alert("❌ Please verify OTP first!");
         return;
     }
 
-    if (otpCode.value.trim().length !== 6) {
-        alert("❌ Invalid OTP!");
+    if (password.value.trim() !== confirmPassword.value.trim()) {
+        alert("❌ Passwords do not match!");
         return;
     }
 
@@ -100,9 +125,7 @@ if (showPassword && password && confirmPassword) {
 
 // ---------- PERSIST FORM ON BACK NAVIGATION ----------
 window.addEventListener("pageshow", (event) => {
-    if (event.persisted) {
-        console.debug("Page restored from cache, keeping form values.");
-    }
+    if (event.persisted) console.debug("Page restored from cache, keeping form values.");
 });
 
 // ---------- INIT ----------
