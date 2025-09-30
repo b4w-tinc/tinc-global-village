@@ -35,15 +35,48 @@
             </div>
     </nav>
 
-    <div class="main-content"></div>
+    <div class="main-content">
+            <div class="sidebar" id="sidebar">
+                <a href="./profile.html">
+                        <div class="sidebar-item">
+                            <img src="./tinc logo.jpg" alt="" style="border-radius: 50%;">
+                            <span>User Name</span>
+                        </div>
+                </a>
+                <a href="./connections.html">
+                        <div class="sidebar-item">
+                            <img src="./people-svgrepo-com.svg" alt="">
+                            <span>Connections</span>
+                        </div>
+                </a>
+                <a href="./messaging.html">
+                    <div class="sidebar-item">
+                        <img src="./chat-svgrepo-com.svg" alt="">
+                        <span>Messaging</span>
+                    </div>
+                </a>
+                <a href="./job-board.html">
+                    <div class="sidebar-item">
+                        <img src="./discover.svg" alt="">
+                        <span>Job Board</span>
+                    </div>
+                </a>
+    
+                <h3>Dark Mode</h3>
+    
+                <a href="./log-in.html">Log Out</a>
+            </div>
+
+        <div class="feed-posts"></div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    
+    <button class="hamburger" id="hamburger">&#8801</button>
 
     <footer>
         <ul class="navbar">
             <li><a href="./global-feed.html">Home</a></li>
-            <li><a href="./notifications.html">Notifications</a></li>
-            <li><a href="./connections.html">Connections</a></li>
-            <li><a href="./messaging.html">Messaging</a></li>
-            <li><a href="./job-board.html">Job Board</a></li>
         </ul>
         <ul class="footer-ul">
             <div class="ul-1">
@@ -59,5 +92,7 @@
             </div>
         </ul>
     </footer>
+
+    <script src="./global-feed.js"></script>
 </body>
 </html>
