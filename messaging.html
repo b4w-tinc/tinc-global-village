@@ -2,13 +2,14 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TINC Global Village</title>
-    <link rel="stylesheet" href="./messaging.css">
+    <link rel="stylesheet" href="./messaging.css" />
 </head>
 
 <body>
+    <!-- Navbar -->
     <nav>
         <div class="logo">
             <img src="./tinc logo.jpg" alt="TINC Logo">
@@ -21,37 +22,60 @@
                 <li><a href="./notifications.html"><img src="./notification-12-svgrepo-com.svg" alt="Notifications"></a>
                 </li>
                 <li><a href="./connections.html"><img src="./people-svgrepo-com.svg" alt="Connections"></a></li>
-                <li class="active"><a href="./messaging.html"><img src="./chat-svgrepo-com.svg" alt="Messaging"></a></li>
+                <li class="active"><a href="./messaging.html"><img src="./chat-svgrepo-com.svg" alt="Messaging"></a>
+                </li>
                 <li><a href="./job-board.html" class="job-board">Job Board</a></li>
             </ul>
         </div>
 
         <div class="nav-icons">
             <ul>
-                <li><img src="./moon-svgrepo-com.svg" class="dark-mode" alt="Dark Mode"></li>
-                <li><img src="./sun-2-svgrepo-com.svg" class="light-mode" alt="Light Mode"></li>
+                <li><img src="./moon-svgrepo-com.svg" class="dark-mode" id="darkMode" alt="Dark Mode"></li>
             </ul>
-            <form>
+            <form class="search-form">
                 <input type="search" placeholder="Search TINC Global Village" class="form-span">
-                <button type="button"><img src="./search-alt-svgrepo-com.svg" alt="Search" style="cursor: pointer;">
-                    </li></button>
+                <button type="submit"><img src="./search-alt-svgrepo-com.svg" alt="Search"></button>
             </form>
         </div>
     </nav>
-    
+
+    <!-- Sidebar -->
+    <aside class="sidebar-2" id="mainSidebar">
+        <a href="./profile.html" class="sidebar-item">
+            <img src="./tinc logo.jpg" alt="" class="circle-img">
+            <span>User Name</span>
+        </a>
+        <a href="./global-feed.html" class="sidebar-item">
+            <img src="./home-svgrepo-com.svg" alt="">
+            <span>Global Feed</span>
+        </a>
+        <a href="./connections.html" class="sidebar-item">
+            <img src="./people-svgrepo-com.svg" alt="">
+            <span>Connections</span>
+        </a>
+        <a href="./job-board.html" class="sidebar-item">
+            <img src="./discover.svg" alt="">
+            <span>Job Board</span>
+        </a>
+
+        <h3 id="modeToggleText">Dark Mode</h3>
+        <a href="./log-in.html" class="logout">Log Out</a>
+    </aside>
+
+    <div class="overlay" id="overlay"></div>
+    <button class="hamburger" id="hamburger">&#8801;</button>
+
+    <!-- Main Content -->
     <div class="main-content">
-
-    <div class="sidebar">
-        <header>
-            <h2>Conversations</h2>
-            <img src="./search-alt-svgrepo-com.svg" alt="search">
-        </header>
-
-        <hr>
-
-        <div class="chat-boxes">
-            <div class="chat">
-                <div class="active-chat">
+        <!-- Conversations Sidebar -->
+        <div class="sidebar">
+            <header>
+                <h2>Conversations</h2>
+                <img src="./search-alt-svgrepo-com.svg" alt="search">
+            </header>
+            <hr>
+            <div class="chat-boxes">
+                <div class="chat active-chat">
                     <div class="chat-details">
                         <img src="./tinc logo.jpg" alt="">
                         <div class="chat-name">
@@ -60,92 +84,75 @@
                         </div>
                         <div class="chat-extra">
                             <p>10:30AM</p>
-                            <p class="unread">3</p>
+                            <span class="unread">3</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat">
+                    <div class="chat-details">
+                        <img src="./tinc logo.jpg" alt="">
+                        <div class="chat-name">
+                            <h3>Design Team</h3>
+                            <p>Mockups are ready</p>
+                        </div>
+                        <div class="chat-extra">
+                            <p>9:30AM</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="chat">
-                <div class="chat-details">
-                    <img src="./tinc logo.jpg" alt="">
-                    <div class="chat-name">
-                        <h3>Product Team</h3>
-                        <p>Let's review the product</p>
-                    </div>
-                    <div class="chat-extra">
-                        <p>9:30AM</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="chat">
-                <div class="chat-details">
-                    <img src="./tinc logo.jpg" alt="">
-                    <div class="chat-name">
-                        <h3>Product Team</h3>
-                        <p>Let's review the product</p>
-                    </div>
-                    <div class="chat-extra">
-                        <p>9:30AM</p>
-                    </div>
-                </div>
-            </div>
-
         </div>
- 
-    </div>
 
-    <div class="chat-head">
-        <header>
-            <h2>Conversations</h2>
-            <div class="header-img">
-                <img src="./search-alt-svgrepo-com.svg" alt="search">
-                <img src="./call-receive-svgrepo-com.svg" alt="call">
-            </div>
-        </header>
-        <hr>
-        <div class="messages">
-            <div class="received"></div>
-            <div class="send">
-                <hr>
-                <div class="send-msg">
-                    <img src="./link-svgrepo-com.svg" alt="">
-                    <form>
-                      <input type="text" class="send-span">  
-                    </form>
-                    <div class="send-extra">
-                        <img src="./send-svgrepo-com.svg" alt="">
-                    </div>
+        <!-- Chat Window -->
+        <div class="chat-head">
+            <header>
+                <h2>Chat</h2>
+                <div class="header-img">
+                    <img src="./call-receive-svgrepo-com.svg" alt="call">
                 </div>
+            </header>
+            <hr>
+
+            <div class="messages" id="chatMessages">
+                <div class="received">Welcome to the chat!</div>
+            </div>
+
+            <!-- Send Box -->
+            <div class="send-msg">
+                <div class="send-extra">
+                    <img src="./link-svgrepo-com.svg" alt="Attach" id="attachIcon" style="cursor: pointer;">
+                    <input type="file" id="fileInput" style="display: none;" multiple>
+                </div>
+                
+                <input type="text" id="chatInput" class="send-span" placeholder="Type a message...">
+
+                <div class="send">
+                    <img src="./send-svgrepo-com.svg" id="sendBtn" class="send-icon" alt="Send">
+                </div>
+                
             </div>
         </div>
     </div>
-</div>
 
-<footer>
-    <ul class="navbar">
-        <li><a href="./global-feed.html">Home</a></li>
-        <li><a href="./notifications.html">Notifications</a></li>
-        <li><a href="./connections.html">Connections</a></li>
-        <li><a href="./messaging.html">Messaging</a></li>
-        <li><a href="./job-board.html">Job Board</a></li>
-    </ul>
-    <ul class="footer-ul">
-        <div class="ul-1">
-            <li><a href="./">Legal</a></li>
-            <li><a href="./">Support</a></li>
-        </div>
-        <div class="ul-2">
-            <li><a href="https://www.instagram.com/b4w.tinc?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
-                    target="_blank" rel="norefferrer noopener"><img
-                        src="./instagram-logo-facebook-2-svgrepo-com (1).svg" alt=""></a></li>
-            <li><a href="./"><img src="./linkedin-logo-svgrepo-com.svg" alt=""></a></li>
-            <li><a href="./"><img src="./twitter-logo-thin-svgrepo-com.svg" alt=""></a></li>
-        </div>
-    </ul>
-</footer>
+    <!-- Footer -->
+    <footer>
+        <ul class="footer-ul">
+            <div class="ul-1">
+                <li><a href="./">Legal</a></li>
+                <li><a href="./">Support</a></li>
+            </div>
+            <div class="ul-2">
+                <li><a href="https://www.instagram.com/b4w.tinc" target="_blank" rel="noopener noreferrer"><img
+                            src="./instagram-logo-facebook-2-svgrepo-com (1).svg" alt="Instagram"></a></li>
+                <li><a href="./"><img src="./linkedin-logo-svgrepo-com.svg" alt="LinkedIn"></a></li>
+                <li><a href="./"><img src="./twitter-logo-thin-svgrepo-com.svg" alt="Twitter"></a></li>
+            </div>
+        </ul>
+    </footer>
 
+    <script src="./messaging.js"></script>
+    <script src="./theme.js"></script>
 </body>
 
 </html>

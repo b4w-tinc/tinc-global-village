@@ -25,7 +25,7 @@
 
             <div class="nav-icons">
                 <ul>
-                    <li><img src="./moon-svgrepo-com.svg" class="dark-mode" alt="Dark Mode"></li>
+                    <li><img src="./moon-svgrepo-com.svg" class="dark-mode" id="darkMode" aria-label="Toggle Theme" data-tooltip="Dark Mode"  alt="Dark Mode"></li>
                     <li><img src="./sun-2-svgrepo-com.svg" class="light-mode" alt="Light Mode"></li>
                 </ul>
                 <form>
@@ -62,7 +62,7 @@
                     </div>
                 </a>
     
-                <h3>Dark Mode</h3>
+                <h3 id="modeToggleText">Dark Mode</h3>
     
                 <a href="./log-in.html">Log Out</a>
             </div>
@@ -75,9 +75,6 @@
     <button class="hamburger" id="hamburger">&#8801</button>
 
     <footer>
-        <ul class="navbar">
-            <li><a href="./global-feed.html">Home</a></li>
-        </ul>
         <ul class="footer-ul">
             <div class="ul-1">
                 <li><a href="./">Legal</a></li>
@@ -93,6 +90,22 @@
         </ul>
     </footer>
 
-    <script src="./global-feed.js"></script>
+    <script>
+        const hamburger = document.getElementById("hamburger");
+            const sidebar = document.getElementById("sidebar");
+            const overlay = document.getElementById("overlay");
+
+            hamburger.addEventListener("click", () => {
+                sidebar.classList.toggle("active");
+                overlay.style.display = sidebar.classList.contains("active") ? "block" : "none";
+            });
+
+            overlay.addEventListener("click", () => {
+                sidebar.classList.remove("active");
+                overlay.style.display = "none";
+            });
+
+    </script>
+    <script src="./theme.js"></script>
 </body>
 </html>
