@@ -41,7 +41,7 @@ if (form) {
         setTimeout(() => {
             hideLoader(true); // force hide before navigating
             alert("Signup successful! Please verify your Email.");
-            window.location.href = "./sign-up-auth.html";
+            window.location.href = "../signup-auth/sign-up-auth.html";
         }, 1500);
     });
 }

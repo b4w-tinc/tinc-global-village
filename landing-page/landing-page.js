@@ -20,5 +20,5 @@ function attachButtonLoader(id, targetPage) {
 }
 
 // Attach loader to Sign Up and Log In buttons
-attachButtonLoader('goToSignup', './sign-up.html');
-attachButtonLoader('goToLogin', './log-in.html');
+attachButtonLoader('goToSignup', '../sign-up/sign-up.html');
+attachButtonLoader('goToLogin', '../log-in/log-in.html');
