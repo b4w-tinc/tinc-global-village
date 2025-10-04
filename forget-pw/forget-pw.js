@@ -107,7 +107,7 @@ form.addEventListener("submit", (e) => {
     }
 
     alert("✅ Password reset successful! Please log in with your new password.");
-    window.location.href = "./log-in.html"; // redirect to login
+    window.location.href = "../log-in/log-in.html"; // redirect to login
 });
 
 // ---------- SHOW / HIDE PASSWORD ----------

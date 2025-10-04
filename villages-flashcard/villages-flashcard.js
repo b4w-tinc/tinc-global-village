@@ -81,8 +81,8 @@ setupCards(seekerCards, seekerCheckboxes, seekerFieldset, seekerJoinBtn);
 
 // --- STEP 5: Join Selected Villages buttons redirect ---
 providerJoinBtn.addEventListener('click', () => {
-    if (!providerJoinBtn.disabled) window.location.href = './global-feed.html';
+    if (!providerJoinBtn.disabled) window.location.href = '../global-feed/global-feed.html';
 });
 seekerJoinBtn.addEventListener('click', () => {
-    if (!seekerJoinBtn.disabled) window.location.href = './global-feed.html';
+    if (!seekerJoinBtn.disabled) window.location.href = '../global-feed/global-feed.html';
 });

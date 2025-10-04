@@ -8,7 +8,7 @@ function setTheme(dark) {
     document.body.classList.add("dark");
 
     if (modeIcon) {
-      modeIcon.src = "./sun-2-svgrepo-com.svg";
+      modeIcon.src = "../img/sun-2-svgrepo-com.svg";
       modeIcon.alt = "Light Mode";
       modeIcon.title = "Light Mode";
     }
@@ -22,7 +22,7 @@ function setTheme(dark) {
     document.body.classList.remove("dark");
 
     if (modeIcon) {
-      modeIcon.src = "./moon-svgrepo-com.svg";
+      modeIcon.src = "../img/moon-svgrepo-com.svg";
       modeIcon.alt = "Dark Mode";
       modeIcon.title = "Dark Mode";
     }

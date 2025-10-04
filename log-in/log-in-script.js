@@ -27,7 +27,7 @@ if (loginForm) {
         setTimeout(() => {
             hideLoader();
             alert("Login successful!");
-            window.location.href = "./global-feed.html";
+            window.location.href = "../global-feed/global-feed.html";
         }, 900);
     });
 }
